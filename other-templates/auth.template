@@ -26,7 +26,7 @@ class AuthState(BaseModel):
         return AccessTokenRequest(username=self.username, password=self.password, scope=self.scope)
 
     def refresh_token_request(self) -> Optional[RefreshTokenRequest]:
-        if self.username is None or self.password is None:
+        if self.refresh_token is None:
             return None
         return RefreshTokenRequest(refresh_token=self.refresh_token, scope=self.scope)
 
