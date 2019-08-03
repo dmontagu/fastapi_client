@@ -49,6 +49,26 @@ For example, running
 ```
 produces the example client, and places it in `generated/fastapi_client`.
 
+If you want to replace `<client_library_name>` with a relative package name, I currently recommend using `sed`
+(this may improve eventually). For example, to place the client in `package.my_client`: 
+
+        ./scripts/generate.sh my_client -i http://localhost/openapi.json
+        
+        find generated/my_client -type f -name "*.py" -exec \
+            sed -i'' -e 's/from my_client/from package.my_client/g' {} +
+
+### With FastAPI
+
+* To generate a client for a default FastAPI app running on localhost (NOT inside a docker container):
+
+        ./scripts/generate.sh my_client -i http://localhost/openapi.json
+
+* Since the generator runs inside docker, if your server is also running in a docker container,
+[you may need to provide a special hostname](https://stackoverflow.com/questions/24319662/from-inside-of-a-docker-container-how-do-i-connect-to-the-localhost-of-the-mach).
+On MacOS, this looks like:
+ 
+        ./scripts/generate.sh my_client -i http://host.docker.internal/api/v1/openapi.json
+
 
 #### Generation details
 
@@ -56,9 +76,6 @@ produces the example client, and places it in `generated/fastapi_client`.
 * `openapi-generator` is used to generate the code from the openapi spec
     * The custom templates are located in `openapi-python-templates`
 * `autoflake`, `isort`, and `black` are used to format the code after generation
-* To generate a client for a default FastAPI app running on localhost:
-
-        ./scripts/generate.sh my_client -i http://localhost/openapi.json
 
 
 ## Contributing
