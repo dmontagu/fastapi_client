@@ -46,10 +46,12 @@ class AuthMiddleware:
 
     @staticmethod
     def set_access_header(token: str, request: AsyncRequest, *, replace: bool) -> None:
+        key = "authorization"
+        value = f"bearer {token}"
         if replace:
-            request.headers["authorization"] = token
+            request.headers[key] = value
         else:
-            request.headers.setdefault("authorization", token)
+            request.headers.setdefault(key, value)
 
     async def login(self) -> Optional[TokenSuccessResponse]:
         access_token_request = self.auth_state.access_token_request()
@@ -77,17 +79,13 @@ class AuthMiddleware:
         access_token = self.auth_state.access_token
         if access_token is not None:
             self.set_access_header(access_token, request, replace=False)
-        try:
-            return await call_next(request)
-        except UnexpectedResponse as response:
-            if response.status_code != HTTP_401_UNAUTHORIZED:
-                raise response
-            tokens = await self.refresh()
-            if tokens:
-                self.set_access_header(tokens.access_token, request, replace=True)
-                return await call_next(request)  # note: won't work with streaming input
+        response = await call_next(request)
+        if response.status_code != HTTP_401_UNAUTHORIZED:
+            return response
+        tokens = await self.refresh()
+        if tokens is None:
             tokens = await self.login()
-            if tokens:
-                self.set_access_header(tokens.access_token, request, replace=True)
-                return await call_next(request)
-            raise response
+        if tokens:
+            self.set_access_header(tokens.access_token, request, replace=True)
+            return await call_next(request)  # note: won't work with streaming input
+        return response

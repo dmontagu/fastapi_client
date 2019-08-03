@@ -7,7 +7,7 @@ from typing import List, Optional, Union
 
 import httpx
 from fastapi.openapi.models import OAuthFlowPassword
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
 from starlette.status import HTTP_200_OK, HTTP_400_BAD_REQUEST, HTTP_401_UNAUTHORIZED
 from typing_extensions import Literal
 
@@ -59,7 +59,7 @@ class TokenErrorType(Enum):
 
 
 class TokenErrorResponse(BaseModel):
-    error: TokenErrorType
+    error: Union[TokenErrorType, str]
     error_description: Optional[str]
     error_uri: Optional[str]
 
@@ -74,19 +74,25 @@ class PasswordFlowClient:
 
     async def request_access_token(self, access_token_request: AccessTokenRequest) -> TokenResponse:
         response = await self._async_client.post(self.flow.tokenUrl, data=access_token_request.dict())
-        if response.status_code == HTTP_200_OK:
-            return TokenSuccessResponse.parse_raw(response.text)
-        if response.status_code in (HTTP_400_BAD_REQUEST, HTTP_401_UNAUTHORIZED):
-            return TokenErrorResponse.parse_raw(response.text)
+        try:
+            if response.status_code == HTTP_200_OK:
+                return TokenSuccessResponse.parse_raw(response.text)
+            if response.status_code in (HTTP_400_BAD_REQUEST, HTTP_401_UNAUTHORIZED):
+                return TokenErrorResponse.parse_raw(response.text)
+        except ValidationError:
+            pass
         raise UnexpectedResponse.for_response(response)
 
     async def request_refresh_token(self, refresh_token_request: RefreshTokenRequest) -> TokenResponse:
         refresh_url = self.flow.refreshUrl or self.flow.tokenUrl
         response = await self._async_client.post(refresh_url, data=refresh_token_request.dict())
-        if response.status_code == HTTP_200_OK:
-            return TokenSuccessResponse.parse_raw(response.text)
-        if response.status_code in (HTTP_400_BAD_REQUEST, HTTP_401_UNAUTHORIZED):
-            return TokenErrorResponse.parse_raw(response.text)
+        try:
+            if response.status_code == HTTP_200_OK:
+                return TokenSuccessResponse.parse_raw(response.text)
+            if response.status_code in (HTTP_400_BAD_REQUEST, HTTP_401_UNAUTHORIZED):
+                return TokenErrorResponse.parse_raw(response.text)
+        except ValidationError:
+            pass
         raise UnexpectedResponse.for_response(response)
 
     def request_access_token_sync(self, access_token_request: AccessTokenRequest) -> TokenResponse:

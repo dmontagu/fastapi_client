@@ -80,6 +80,7 @@ class ApiClient:
 
     def add_middleware(self, middleware: MiddlewareT) -> None:
         current_middleware = self.middleware
+
         async def new_middleware(request: AsyncRequest, call_next: Send) -> AsyncResponse:
             async def inner_send(request: AsyncRequest) -> AsyncResponse:
                 return await current_middleware(request, call_next)
