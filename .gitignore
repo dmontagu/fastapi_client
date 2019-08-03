@@ -1,0 +1,10 @@
+.idea/
+
+venv/
+
+.mypy_cache/
+.pytest_cache/
+
+generated/
+
+*.pyc

@@ -1,0 +1,155 @@
+# flake8: noqa E501
+import json
+from asyncio import get_event_loop
+from typing import Any, Coroutine, Dict, IO, List, TYPE_CHECKING
+from datetime import datetime
+from uuid import UUID
+
+from fastapi.encoders import jsonable_encoder
+
+from {{packageName}} import models as m
+
+if TYPE_CHECKING:
+    from {{packageName}}.api_client import ApiClient
+
+{{#operations}}
+class {{classname}}:
+    def __init__(self, api_client: "ApiClient"):
+        self.api_client = api_client
+
+    # ##################################
+    # ##### Asynchronous Interface #####
+    # ##################################
+{{#operation}}
+    async def {{operationId}}(self, {{#allParams}}{{#required}}{{paramName}}: {{>_dataTypeApi}}{{/required}}{{^required}}{{paramName}}: {{>_dataTypeApi}} = None{{/required}}, {{/allParams}}) -> {{>_returnType}}:
+{{#notes}}
+        """
+        {{{notes}}}
+        """
+{{/notes}}
+        return await self._build_for_{{operationId}}({{#allParams}}{{paramName}}={{paramName}}, {{/allParams}})
+
+{{/operation}}
+    # #################################
+    # ##### Synchronous Interface #####
+    # #################################
+{{#operation}}
+    def {{operationId}}_sync(self, {{#allParams}}{{#required}}{{paramName}}: {{>_dataTypeApi}}{{/required}}{{^required}}{{paramName}}: {{>_dataTypeApi}} = None{{/required}}, {{/allParams}}) -> {{>_returnType}}:
+{{#notes}}
+        """
+        {{{notes}}}
+        """
+{{/notes}}
+        coroutine = self.{{operationId}}({{#allParams}}{{paramName}}={{paramName}}, {{/allParams}})
+        return get_event_loop().run_until_complete(coroutine)
+
+{{/operation}}
+    # ###################
+    # ##### Private #####
+    # ###################
+{{#operation}}
+    def _build_for_{{operationId}}(self, {{#allParams}}{{#required}}{{paramName}}: {{>_dataTypeApi}}{{/required}}{{^required}}{{paramName}}: {{>_dataTypeApi}} = None{{/required}}, {{/allParams}}) -> Coroutine[None, None, {{>_returnType}}]:
+{{#notes}}
+        """
+        {{{notes}}}
+        """
+{{/notes}}
+{{#pathParams.0}}
+        path_params = {
+{{#pathParams}}
+{{#required}}
+            "{{baseName}}": str({{paramName}}),
+{{/required}}
+{{/pathParams}}
+        }
+{{#pathParams}}
+{{^required}}
+        if {{paramName}} is not None:
+            path_params["{{baseName}}"] = str({{paramName}})
+{{/required}}
+{{/pathParams}}
+
+{{/pathParams.0}}
+{{#queryParams.0}}
+        query_params = {
+{{#queryParams}}
+{{#required}}
+            "{{baseName}}": str({{paramName}}),
+{{/required}}
+{{/queryParams}}
+        }
+{{#queryParams}}
+{{^required}}
+        if {{paramName}} is not None:
+            query_params["{{baseName}}"] = str({{paramName}})
+{{/required}}
+{{/queryParams}}
+
+{{/queryParams.0}}
+{{#headerParams.0}}
+        headers = {
+{{#headerParams}}
+{{#required}}
+            "{{baseName}}": str({{paramName}})
+{{/required}}
+{{/headerParams}}
+        }
+{{#headerParams}}
+{{^required}}
+        if {{paramName}} is not None:
+            headers["{{baseName}}"] = str({{paramName}})
+{{/required}}
+{{/headerParams}}
+
+{{/headerParams.0}}
+{{#cookieParams.0}}
+        cookies = {
+{{#cookieParams}}
+{{#required}}
+            "{{baseName}}": str({{paramName}})
+{{/required}}
+{{/cookieParams}}
+        }
+{{#cookieParams}}
+{{^required}}
+        if {{paramName}} is not None:
+            cookies["{{baseName}}"] = str({{paramName}})
+{{/required}}
+{{/cookieParams}}
+
+{{/cookieParams.0}}
+{{#formParams.0}}
+        files: Dict[str, IO[Any]] = {}  # noqa F841
+        data: Dict[str, Any] = {}  # noqa F841
+{{#formParams}}
+{{#required}}
+        {{#isFile}}files{{/isFile}}{{^isFile}}data{{/isFile}}["{{baseName}}"] = {{paramName}}
+{{/required}}
+{{/formParams}}
+{{#formParams}}
+{{^required}}
+        if {{paramName}} is not None:
+            {{#isFile}}files{{/isFile}}{{^isFile}}data{{/isFile}}["{{baseName}}"] = {{paramName}}
+{{/required}}
+{{/formParams}}
+
+{{/formParams.0}}
+{{#bodyParam}}
+        body = jsonable_encoder({{paramName}})
+
+{{/bodyParam}}
+        return self.api_client.request(
+            type_={{>_returnType}},
+            method="{{httpMethod}}",
+            url="{{{path}}}",
+            {{#pathParams.0}}path_params=path_params,{{/pathParams.0}}
+            {{#queryParams.0}}params=query_params,{{/queryParams.0}}
+            {{#headerParams.0}}headers=headers,{{/headerParams.0}}
+            {{#cookieParams.0}}cookies=cookies,{{/cookieParams.0}}
+            {{#formParams.0}}data=data,{{/formParams.0}}
+            {{#fileParams.0}}files=files,{{/fileParams.0}}
+            {{#bodyParam}}json=body,{{/bodyParam}}
+        )
+
+{{/operation}}
+{{/operations}}

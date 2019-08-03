@@ -1,0 +1,1 @@
+{{#returnType}}{{#returnSimpleType}}{{>_innerReturnType}}{{/returnSimpleType}}{{^returnSimpleType}}{{#isMapContainer}}Dict[str, {{>_innerReturnType}}]{{/isMapContainer}}{{^isMapContainer}}List[{{>_innerReturnType}}]{{/isMapContainer}}{{/returnSimpleType}}{{/returnType}}{{^returnType}}None{{/returnType}}

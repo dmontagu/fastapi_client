@@ -1,0 +1,1 @@
+{{#isModel}}{{#isFile}}IO[Any]{{/isFile}}{{^isFile}}m.{{{dataType}}}{{/isFile}}{{/isModel}}{{#isUuid}}UUID{{/isUuid}}{{#isListContainer}}List[{{#items}}{{>_dataTypeApi}}{{/items}}]{{/isListContainer}}{{^isModel}}{{^isUuid}}{{^isFile}}{{^isListContainer}}{{{dataType}}}{{/isListContainer}}{{/isFile}}{{/isUuid}}{{/isModel}}
