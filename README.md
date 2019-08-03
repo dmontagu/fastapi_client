@@ -9,7 +9,8 @@ The generated client has the following dependencies:
 * `httpx` for networking
 * `typing_extensions` for Enums (I hope to remove this eventually)
 
-The generated client also has built-in support for the OAuth2.0 password flow; see `example/usage_example.py`. 
+The generated client also has built-in support for the OAuth2.0 password flow;
+see `example/usage_example.py` (or `tests/auth_app.py` and `tests/test_auth.py`). 
 
 **Warning: This is still in the proof-of-concept phase.** It has some known bugs, and even more unknown.
 

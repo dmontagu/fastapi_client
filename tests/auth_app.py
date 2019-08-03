@@ -11,9 +11,9 @@ reusable_oauth2 = OAuth2PasswordBearer(tokenUrl="/token")
 
 
 @app.get("/")
-def f(encoded: str = Depends(reusable_oauth2)) -> JSONResponse:
-    if encoded != "access_token":
-        raise HTTPException(status_code=HTTP_401_UNAUTHORIZED, detail="unauthorized_client")
+def f(token: str = Depends(reusable_oauth2)) -> JSONResponse:
+    if token != "access_token":
+        raise HTTPException(status_code=HTTP_401_UNAUTHORIZED, detail="Not authorized")
 
     return JSONResponse(content={"result": "success"})
 
@@ -22,7 +22,7 @@ def f(encoded: str = Depends(reusable_oauth2)) -> JSONResponse:
 def f(form_data: OAuth2PasswordRequestForm = Depends()) -> TokenSuccessResponse:
     if form_data.username == "username" and form_data.password == "password":
         return TokenSuccessResponse(access_token="access_token", token_type="bearer")
-    raise HTTPException(status_code=HTTP_401_UNAUTHORIZED, detail="unauthorized_client")
+    raise HTTPException(status_code=HTTP_401_UNAUTHORIZED, detail="Not authorized")
 
 
 uvicorn.run(app, host="0.0.0.0", port=8000)
