@@ -1,6 +1,6 @@
 # FastAPI-compatible API Client Generator
 
-Generate a sync+async IDE-friendly API client from an OpenAPI spec. Designed primarily to work with FastAPI.
+Generate a sync+async IDE-friendly API client from an OpenAPI spec. (Designed primarily to work with FastAPI.)
 
 Look inside `example/fastapi_client` to see what the generated output looks like. 
 
