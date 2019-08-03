@@ -18,5 +18,5 @@ rm -r "${PACKAGE_NAME}"/test > /dev/null 2>&1 || true
 
 # Clean up the generated code where possible
 autoflake --remove-all-unused-imports --recursive --remove-unused-variables --in-place "${PACKAGE_NAME}" --exclude=__init__.py
-isort -w 120 -m 3 -tc -fgw 0 -ca -p fastapi_client -rc fastapi_client
+isort -w 120 -m 3 -tc -fgw 0 -ca -p "${PACKAGE_NAME}" -rc "${PACKAGE_NAME}"
 black -l 120 --target-version py36 "${PACKAGE_NAME}"
