@@ -10,8 +10,8 @@ cat $(ls "${PACKAGE_NAME}"/models/*.py | grep -v __init__) >${PACKAGE_NAME}/mode
 rm -r "${PACKAGE_NAME}"/models >/dev/null 2>&1 || true
 
 # The following lines have been useful for me to remove some auto-generated cruft models; they may not be necessary
-#find python/scan_client -type f -name '*.py' -exec grep -l "DefaultApi" {} + | xargs -I '{}' sh -c $'echo \'{}\' && awk \'!/import DefaultApi/\' \'{}\' > temp && mv temp \'{}\''
-#find python/scan_client -type f -name '*.py' -exec grep -l "from scan_client.models import Body" {} + | xargs -I '{}' sh -c $'echo \'{}\' && awk \'!/from scan_client.models import Body/\' \'{}\' > temp && mv temp \'{}\''
+# find "${PACKAGE_NAME}" -type f -name '*.py' -exec grep -l "DefaultApi" {} + | xargs -I '{}' sh -c $'echo \'{}\' && awk \'!/DefaultApi/\' \'{}\' > temp && mv temp \'{}\''
+# find "${PACKAGE_NAME}" -type f -name '*.py' -exec grep -l "from ${PACKAGE_NAME}.models import Body" {} + | xargs -I '{}' sh -c $'echo \'{}\' && awk \'!/from ${PACKAGE_NAME}.models import Body/\' \'{}\' > temp && mv temp \'{}\''
 
 # Delete empty folder
 rm -r "${PACKAGE_NAME}"/test >/dev/null 2>&1 || true
