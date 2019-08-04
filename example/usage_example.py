@@ -54,7 +54,7 @@ def do_some_sync_tasks() -> None:
     pet.status = "sold"
     apis.pet_api.update_pet_sync(pet)
 
-    apis.store_api.delete_order(order_id=1)
+    apis.store_api.delete_order_sync(order_id=1)
 
 
 do_some_sync_tasks()
