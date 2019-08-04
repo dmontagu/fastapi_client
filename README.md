@@ -12,7 +12,7 @@ The generated client has the following dependencies:
 The generated client also has built-in support for the OAuth2.0 password flow;
 see `example/usage_example.py` (or `tests/auth_app.py` and `tests/test_auth.py`). 
 
-**Warning: This is still in the proof-of-concept phase.** It has some known bugs, and even more unknown.
+**Warning: This is still in the proof-of-concept phase.**
 
 If you try this out, please help me by reporting any issues you notice! 
 
