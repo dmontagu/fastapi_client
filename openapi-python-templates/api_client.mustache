@@ -6,7 +6,7 @@ from pydantic import ValidationError
 from pydantic.generics import GenericModel
 from starlette.status import HTTP_200_OK
 
-{{#apiInfo}}{{#apis}}from {{apiPackage}}.{{classVarName}} import {{classname}}
+{{#apiInfo}}{{#apis}}from {{apiPackage}}.{{classVarName}} import Async{{classname}}, Sync{{classname}}
 {{/apis}}{{/apiInfo}}from {{packageName}}.exceptions import ApiRequestException, UnexpectedResponse
 
 T = TypeVar("T")
@@ -60,6 +60,9 @@ class ApiClient:
         ...
 
     def request_sync(self, *, type_: Any, **kwargs: Any) -> Any:  # noqa F811
+        """
+        This method is not used by the generated apis, but is included for convenience
+        """
         return get_event_loop().run_until_complete(self.request(type_=type_, **kwargs))
 
     async def send(self, request: AsyncRequest, type_: Type[T]) -> T:
@@ -93,8 +96,15 @@ class ApiClient:
 ClientT = TypeVar("ClientT", bound=ApiClient)
 
 
-class Apis(Generic[ClientT]):
+class AsyncApis(Generic[ClientT]):
     def __init__(self, client: ClientT):
         self.client = client
 {{#apiInfo}}{{#apis}}
-        self.{{classVarName}} = {{classname}}(self.client){{/apis}}{{/apiInfo}}
+        self.{{classVarName}} = Async{{classname}}(self.client){{/apis}}{{/apiInfo}}
+
+
+class SyncApis(Generic[ClientT]):
+    def __init__(self, client: ClientT):
+        self.client = client
+{{#apiInfo}}{{#apis}}
+        self.{{classVarName}} = Sync{{classname}}(self.client){{/apis}}{{/apiInfo}}

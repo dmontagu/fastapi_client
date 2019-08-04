@@ -3,14 +3,16 @@ from functools import lru_cache
 
 from fastapi.openapi.models import OAuthFlowPassword
 
-from fastapi_client.api_client import ApiClient, Apis
-from fastapi_client.auth import AuthMiddleware, AuthState
-from fastapi_client.models import User
+from client.api_client import ApiClient, AsyncApis, SyncApis
+from client.auth import AuthMiddleware, AuthState
+from client.models import User
 
 
 class AutoAuthClient(ApiClient):
     """
-    Subclasses ApiClient to add some extra functionality
+    You can add custom handling behavior by subclassing ApiClient.
+
+    This subclass adds automatic retry on auth errors via AuthMiddleware.
     """
 
     def __init__(self, host: str = "http://localhost", tokenUrl: str = "http://localhost/token"):
@@ -25,37 +27,43 @@ class AutoAuthClient(ApiClient):
         self.auth_state.password = password
 
 
+# lru_cache is used to (essentially) implement the singleton pattern for accessing the apis
 @lru_cache()
-def get_apis() -> Apis[AutoAuthClient]:
-    client = AutoAuthClient()
-    return Apis(client)
+def get_client() -> AutoAuthClient:
+    return AutoAuthClient()
 
 
-def set_apis_creds(username: str, password: str) -> None:
-    get_apis().client.set_creds(username=username, password=password)
+@lru_cache()
+def get_sync_apis() -> SyncApis[AutoAuthClient]:
+    return SyncApis(get_client())
 
 
-set_apis_creds("hello", "world")
+@lru_cache()
+def get_async_apis() -> AsyncApis[AutoAuthClient]:
+    return AsyncApis(get_client())
 
 
-async def do_some_tasks() -> None:
-    apis = get_apis()
+async def do_some_async_tasks() -> None:
+    apis = get_async_apis()
 
-    apis.store_api.delete_order(order_id=0)
+    await apis.store_api.delete_order(order_id=0)
 
     new_user = User(id=1, username="friend", password="globe")
-    apis.user_api.create_user(new_user)
+    await apis.user_api.create_user(new_user)
 
 
 def do_some_sync_tasks() -> None:
-    apis = get_apis()
+    apis = get_sync_apis()
 
-    pet = apis.pet_api.get_pet_by_id_sync(pet_id=1)
+    pet = apis.pet_api.get_pet_by_id(pet_id=1)
     pet.status = "sold"
-    apis.pet_api.update_pet_sync(pet)
+    apis.pet_api.update_pet(pet)
 
-    apis.store_api.delete_order_sync(order_id=1)
+    apis.store_api.delete_order(order_id=1)
 
+
+get_client().set_creds(username="hello", password="world")
 
 do_some_sync_tasks()
-get_event_loop().run_until_complete(do_some_tasks())
+
+get_event_loop().run_until_complete(do_some_async_tasks())

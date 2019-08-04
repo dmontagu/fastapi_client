@@ -1,40 +1,49 @@
-# FastAPI-compatible API Client Generator
+# FastAPI-based API Client Generator
 
-Generate a sync+async IDE-friendly API client from an OpenAPI spec. (Designed primarily to work with FastAPI.)
+**Generate a mypy- and IDE-friendly API client from an OpenAPI spec.**
 
-Look inside `example/fastapi_client` to see what the generated output looks like. 
+* Sync and async interfaces are both available
+* Comes with support for the OAuth2.0 password flow
+* Easily extended, with built-in support for request middleware
+* Designed for integration with FastAPI, but should work with most OpenAPI specs
+
+Look inside `example/client` to see an example of the generated output!
+
+----
 
 The generated client has the following dependencies:
+
 * `fastapi`, `pydantic`, `starlette`
 * `httpx` for networking
-* `typing_extensions` for Enums (I hope to remove this eventually)
+* `typing_extensions` for Enums (I eventually hope to replace this with standard enums)
 
-The generated client also has built-in support for the OAuth2.0 password flow;
-see `example/usage_example.py` (or `tests/auth_app.py` and `tests/test_auth.py`). 
+For auth-handling examples, see `example/usage_example.py` (or `tests/auth_app.py` and `tests/test_auth.py`). 
 
-**Warning: This is still in the proof-of-concept phase.**
+**Warning: This is still in the proof-of-concept phase, and may change.**
+
+* Some OpenAPI features (like discriminator fields) are not yet supported.
+* Designed primarily against FastAPI, but the goal is to support any OpenAPI spec.
 
 If you try this out, please help me by reporting any issues you notice! 
 
 ## Client library usage
 
 ```python
-from fastapi_client.api_client import ApiClient, Apis
-from fastapi_client.models import Pet
+from client.api_client import ApiClient, AsyncApis, SyncApis
+from client.models import Pet
 
 client = ApiClient(host="http://localhost")
-apis = Apis(client)
+sync_apis = SyncApis(client)
+async_apis = AsyncApis(client)
 
-# Async API
-async def get_pet_1() -> Pet:
-    return await apis.pet_api.get_pet_by_id(pet_id=1)
+pet_1 = sync_apis.pet_api.get_pet_by_id(pet_id=1)
 
-# Sync API 
-pet_2 = apis.pet_api.get_pet_by_id_sync(pet_id=2)
+async def get_pet_2() -> Pet:
+    return await async_apis.pet_api.get_pet_by_id(pet_id=2)
 ```
 
-See `example/fastapi_client` for an example generated client library,
-and `example/usage_example.py` for some more complex usage. 
+The example generated client library is contained in `example/client`.
+More examples of usage (including auth) are contained in `example/usage_example.py`. 
 
 ## Generating the client library
 
@@ -46,17 +55,19 @@ and will produce a client library at `generated/<client_library_name>`
 
 For example, running
 ```bash
-./scripts/generate.sh fastapi_client -i https://petstore.swagger.io/v2/swagger.json
+./scripts/generate.sh client -i https://petstore.swagger.io/v2/swagger.json
 ```
-produces the example client, and places it in `generated/fastapi_client`.
+produces the example client, and places it in `generated/client`.
 
 If you want to replace `<client_library_name>` with a relative package name, I currently recommend using `sed`
-(this may improve eventually). For example, to place the client in `package.my_client`: 
+(I hope to improve this eventually). For example, to place the client in `package.my_client`: 
 
-        ./scripts/generate.sh my_client -i http://localhost/openapi.json
-        
-        find generated/my_client -type f -name "*.py" -exec \
-            sed -i'' -e 's/from my_client/from package.my_client/g' {} +
+```bash
+./scripts/generate.sh my_client -i http://localhost/openapi.json
+
+find generated/my_client -type f -name "*.py" -exec \
+    sed -i'' -e 's/from my_client/from package.my_client/g' {} +
+```
 
 ### With FastAPI
 

@@ -12,7 +12,7 @@ from pydantic import BaseModel, ValidationError
 from starlette.status import HTTP_200_OK, HTTP_400_BAD_REQUEST, HTTP_401_UNAUTHORIZED
 from typing_extensions import Literal
 
-from fastapi_client.exceptions import UnexpectedResponse
+from client.exceptions import UnexpectedResponse
 
 TokenRequestT = TypeVar("TokenRequestT", bound="BaseTokenRequest")
 

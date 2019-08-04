@@ -1,7 +1,7 @@
 # flake8: noqa E501
 import json
 from asyncio import get_event_loop
-from typing import Any, Coroutine, Dict, IO, List, TYPE_CHECKING
+from typing import Any, Awaitable, Dict, IO, List, TYPE_CHECKING
 from datetime import datetime
 from uuid import UUID
 
@@ -13,42 +13,11 @@ if TYPE_CHECKING:
     from {{packageName}}.api_client import ApiClient
 
 {{#operations}}
-class {{classname}}:
+class _{{classname}}:
     def __init__(self, api_client: "ApiClient"):
         self.api_client = api_client
-
-    # ##################################
-    # ##### Asynchronous Interface #####
-    # ##################################
 {{#operation}}
-    async def {{operationId}}(self, {{#allParams}}{{#required}}{{paramName}}: {{>_dataTypeApi}}{{/required}}{{^required}}{{paramName}}: {{>_dataTypeApi}} = None{{/required}}, {{/allParams}}) -> {{>_returnType}}:
-{{#notes}}
-        """
-        {{{notes}}}
-        """
-{{/notes}}
-        return await self._build_for_{{operationId}}({{#allParams}}{{paramName}}={{paramName}}, {{/allParams}})
-
-{{/operation}}
-    # #################################
-    # ##### Synchronous Interface #####
-    # #################################
-{{#operation}}
-    def {{operationId}}_sync(self, {{#allParams}}{{#required}}{{paramName}}: {{>_dataTypeApi}}{{/required}}{{^required}}{{paramName}}: {{>_dataTypeApi}} = None{{/required}}, {{/allParams}}) -> {{>_returnType}}:
-{{#notes}}
-        """
-        {{{notes}}}
-        """
-{{/notes}}
-        coroutine = self.{{operationId}}({{#allParams}}{{paramName}}={{paramName}}, {{/allParams}})
-        return get_event_loop().run_until_complete(coroutine)
-
-{{/operation}}
-    # ###################
-    # ##### Private #####
-    # ###################
-{{#operation}}
-    def _build_for_{{operationId}}(self, {{#allParams}}{{#required}}{{paramName}}: {{>_dataTypeApi}}{{/required}}{{^required}}{{paramName}}: {{>_dataTypeApi}} = None{{/required}}, {{/allParams}}) -> Coroutine[None, None, {{>_returnType}}]:
+    def _build_for_{{operationId}}(self, {{#allParams}}{{#required}}{{paramName}}: {{>_dataTypeApi}}{{/required}}{{^required}}{{paramName}}: {{>_dataTypeApi}} = None{{/required}}, {{/allParams}}) -> Awaitable[{{>_returnType}}]:
 {{#notes}}
         """
         {{{notes}}}
@@ -151,5 +120,33 @@ class {{classname}}:
             {{#bodyParam}}json=body,{{/bodyParam}}
         )
 
+{{/operation}}
+{{/operations}}
+
+{{#operations}}
+class Async{{classname}}(_{{classname}}):
+{{#operation}}
+    async def {{operationId}}(self, {{#allParams}}{{#required}}{{paramName}}: {{>_dataTypeApi}}{{/required}}{{^required}}{{paramName}}: {{>_dataTypeApi}} = None{{/required}}, {{/allParams}}) -> {{>_returnType}}:
+{{#notes}}
+        """
+        {{{notes}}}
+        """
+{{/notes}}
+        return await self._build_for_{{operationId}}({{#allParams}}{{paramName}}={{paramName}}, {{/allParams}})
+
+{{/operation}}
+{{/operations}}
+
+{{#operations}}
+class Sync{{classname}}(_{{classname}}):
+{{#operation}}
+    def {{operationId}}(self, {{#allParams}}{{#required}}{{paramName}}: {{>_dataTypeApi}}{{/required}}{{^required}}{{paramName}}: {{>_dataTypeApi}} = None{{/required}}, {{/allParams}}) -> {{>_returnType}}:
+{{#notes}}
+        """
+        {{{notes}}}
+        """
+{{/notes}}
+        coroutine = self._build_for_{{operationId}}({{#allParams}}{{paramName}}={{paramName}}, {{/allParams}})
+        return get_event_loop().run_until_complete(coroutine)
 {{/operation}}
 {{/operations}}

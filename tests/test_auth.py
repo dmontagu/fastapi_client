@@ -6,8 +6,8 @@ from typing import Dict
 
 from fastapi.openapi.models import OAuthFlowPassword
 
-from fastapi_client.api_client import ApiClient
-from fastapi_client.auth import AuthMiddleware, AuthState
+from client.api_client import ApiClient
+from client.auth import AuthMiddleware, AuthState
 
 
 class AutoAuthClient(ApiClient):

@@ -4,7 +4,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from starlette.responses import JSONResponse
 from starlette.status import HTTP_401_UNAUTHORIZED
 
-from fastapi_client.password_flow_client import TokenSuccessResponse
+from client.password_flow_client import TokenSuccessResponse
 
 app = FastAPI(debug=True)
 reusable_oauth2 = OAuth2PasswordBearer(tokenUrl="/token")

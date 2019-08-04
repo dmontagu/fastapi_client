@@ -6,10 +6,10 @@ from pydantic import ValidationError
 from pydantic.generics import GenericModel
 from starlette.status import HTTP_200_OK
 
-from fastapi_client.api.pet_api import PetApi
-from fastapi_client.api.store_api import StoreApi
-from fastapi_client.api.user_api import UserApi
-from fastapi_client.exceptions import ApiRequestException, UnexpectedResponse
+from client.api.pet_api import AsyncPetApi, SyncPetApi
+from client.api.store_api import AsyncStoreApi, SyncStoreApi
+from client.api.user_api import AsyncUserApi, SyncUserApi
+from client.exceptions import ApiRequestException, UnexpectedResponse
 
 T = TypeVar("T")
 
@@ -63,6 +63,9 @@ class ApiClient:
         ...
 
     def request_sync(self, *, type_: Any, **kwargs: Any) -> Any:  # noqa F811
+        """
+        This method is not used by the generated apis, but is included for convenience
+        """
         return get_event_loop().run_until_complete(self.request(type_=type_, **kwargs))
 
     async def send(self, request: AsyncRequest, type_: Type[T]) -> T:
@@ -96,10 +99,19 @@ class ApiClient:
 ClientT = TypeVar("ClientT", bound=ApiClient)
 
 
-class Apis(Generic[ClientT]):
+class AsyncApis(Generic[ClientT]):
     def __init__(self, client: ClientT):
         self.client = client
 
-        self.pet_api = PetApi(self.client)
-        self.store_api = StoreApi(self.client)
-        self.user_api = UserApi(self.client)
+        self.pet_api = AsyncPetApi(self.client)
+        self.store_api = AsyncStoreApi(self.client)
+        self.user_api = AsyncUserApi(self.client)
+
+
+class SyncApis(Generic[ClientT]):
+    def __init__(self, client: ClientT):
+        self.client = client
+
+        self.pet_api = SyncPetApi(self.client)
+        self.store_api = SyncStoreApi(self.client)
+        self.user_api = SyncUserApi(self.client)

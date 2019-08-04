@@ -6,9 +6,9 @@ from httpx import AsyncRequest, AsyncResponse
 from pydantic import BaseModel
 from starlette.status import HTTP_401_UNAUTHORIZED
 
-from fastapi_client.api_client import Send
-from fastapi_client.exceptions import UnexpectedResponse
-from fastapi_client.password_flow_client import (
+from client.api_client import Send
+from client.exceptions import UnexpectedResponse
+from client.password_flow_client import (
     AccessTokenRequest,
     PasswordFlowClient,
     RefreshTokenRequest,
