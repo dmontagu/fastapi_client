@@ -83,6 +83,13 @@ class AuthMiddleware:
         if tokens is None:
             tokens = await self.login()
         if tokens:
+            self.on_received_tokens(tokens=tokens)
             self.set_access_header(tokens.access_token, request, replace=True)
             return await call_next(request)  # note: won't work with streaming input
         return response
+
+    def on_received_tokens(self, tokens: TokenSuccessResponse) -> None:
+        """
+        A hook for interacting with received tokens when auth succeeds.
+        """
+        return
