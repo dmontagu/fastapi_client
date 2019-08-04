@@ -11,8 +11,11 @@ auth_app_pid=$!
 trap 'kill -KILL $auth_app_pid; echo "Killed auth app process"' EXIT
 sleep 1
 
-pytest tests
+pytest tests --cov=example
 
 kill -KILL $auth_app_pid
 echo "Killed auth app process"
 trap - EXIT
+
+echo "building coverage html"
+coverage html
