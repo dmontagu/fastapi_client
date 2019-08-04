@@ -6,7 +6,7 @@
 * Comes with support for the OAuth2.0 password flow
 * Easily extended, with built-in support for request middleware
 * Designed for integration with FastAPI, but should work with most OpenAPI specs
-* Based on https://github.com/OpenAPITools/openapi-generator
+* Makes use of https://github.com/OpenAPITools/openapi-generator
 
 Look inside `example/client` to see an example of the generated output!
 
