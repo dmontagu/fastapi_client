@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /usr/bin/env bash
 set -e
 
 [ -z "$1" ] && echo "Did not pass PACKAGE_NAME as first arg to _postprocess-docker.sh" && exit 1
