@@ -32,3 +32,4 @@ def test_auth():
     client.set_creds("username", "password")
     result = client.request_sync(type_=Dict, method="GET", url="/")
     assert result == {"result": "success"}
+    assert client.auth_state.access_token == "access_token"
