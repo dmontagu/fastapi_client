@@ -71,7 +71,7 @@ On MacOS, this looks like:
         ./scripts/generate.sh my_client -i http://host.docker.internal/api/v1/openapi.json
 
 
-#### Generation details
+### Generation details
 
 * The only local dependencies for generation are `docker` and standard command line tools.
 * `openapi-generator` is used to generate the code from the openapi spec
@@ -81,4 +81,11 @@ On MacOS, this looks like:
 
 ## Contributing
 
-Pull requests are welcome!
+There are a variety of make rules for setup/testing; here are some highlights:
+* `make develop`: Sets up the local development environment.
+* `make regenerate`: Regenerates the example client from the example's openapi.json and the templates.
+    * Note: *This will overwrite changes!* Make sure you commit (or edit the templates) before running this.
+* `make`: Checks that isort, black, flake8, mypy, and pytest all pass
+* `make testcov`: Generates a coverage report for the tests.
+ 
+Pull requests are welcome and appreciated!
