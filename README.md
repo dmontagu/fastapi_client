@@ -29,9 +29,12 @@ sync_apis = SyncApis(client)
 async_apis = AsyncApis(client)
 
 pet_1 = sync_apis.pet_api.get_pet_by_id(pet_id=1)
+assert isinstance(pet_1, Pet)
 
 async def get_pet_2() -> Pet:
-    return await async_apis.pet_api.get_pet_by_id(pet_id=2)
+    pet_2 = await async_apis.pet_api.get_pet_by_id(pet_id=2)
+    assert isinstance(pet_2, Pet)
+    return pet_2
 ```
 
 The example generated client library is contained in `example/client`.
