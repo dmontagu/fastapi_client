@@ -41,6 +41,6 @@ class UnexpectedResponse(ApiException):
         return json.loads(self.content)
 
 
-class ApiRequestException(ApiException):
+class ResponseHandlingException(ApiException):
     def __init__(self, source: Exception):
         self.source = source

@@ -1,17 +1,21 @@
 from contextlib import suppress
 from datetime import datetime, timedelta
-from typing import Type, Optional
+from typing import Optional
 
 from fastapi.openapi.models import OAuthFlowPassword
-from fastapi import FastAPI
 from httpx import AsyncRequest, AsyncResponse
 from pydantic import BaseModel
-from starlette.status import HTTP_401_UNAUTHORIZED
 
-from PACKAGE_NAME.api_client import ApiClient, T, Send
+from PACKAGE_NAME.api_client import Send
 from PACKAGE_NAME.exceptions import UnexpectedResponse
-from PACKAGE_NAME.password_flow_client import PasswordFlowClient, RefreshTokenRequest, TokenSuccessResponse, \
-    AccessTokenRequest
+from PACKAGE_NAME.password_flow_client import (
+    AccessTokenRequest,
+    PasswordFlowClient,
+    RefreshTokenRequest,
+    TokenSuccessResponse,
+)
+
+HTTP_401_UNAUTHORIZED = 401
 
 
 class AuthState(BaseModel):

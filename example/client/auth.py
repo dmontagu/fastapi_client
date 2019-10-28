@@ -5,7 +5,6 @@ from typing import Optional
 from fastapi.openapi.models import OAuthFlowPassword
 from httpx import AsyncRequest, AsyncResponse
 from pydantic import BaseModel
-from starlette.status import HTTP_401_UNAUTHORIZED
 
 from client.api_client import Send
 from client.exceptions import UnexpectedResponse
@@ -15,6 +14,8 @@ from client.password_flow_client import (
     RefreshTokenRequest,
     TokenSuccessResponse,
 )
+
+HTTP_401_UNAUTHORIZED = 401
 
 
 class AuthState(BaseModel):
