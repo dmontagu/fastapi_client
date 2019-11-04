@@ -6,9 +6,9 @@ from httpx import AsyncClient, AsyncRequest, AsyncResponse
 from pydantic import ValidationError
 
 {{#apiInfo}}{{#apis}}from {{apiPackage}}.{{classVarName}} import Async{{classname}}, Sync{{classname}}
-{{/apis}}{{/apiInfo}}from {{packageName}}.exceptions import ApiRequestException, UnexpectedResponse
+{{/apis}}{{/apiInfo}}from {{packageName}}.exceptions import ResponseHandlingException, UnexpectedResponse
 
-ClientT = TypeVar("ClientT", bound=ApiClient)
+ClientT = TypeVar("ClientT", bound="ApiClient")
 
 
 class AsyncApis(Generic[ClientT]):

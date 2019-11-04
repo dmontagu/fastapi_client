@@ -1,3 +1,4 @@
+import uvicorn
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from starlette.responses import JSONResponse
@@ -23,3 +24,11 @@ def get_tokens(form_data: OAuth2PasswordRequestForm = Depends()) -> TokenSuccess
     if form_data.username == "username" and form_data.password == "password":
         return TokenSuccessResponse(access_token="access_token", token_type="bearer")
     raise HTTPException(status_code=HTTP_401_UNAUTHORIZED, detail="Not authorized")
+
+
+def main() -> None:
+    uvicorn.run(app, host="0.0.0.0", port=8000)
+
+
+if __name__ == "__main__":
+    main()

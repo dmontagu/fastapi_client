@@ -38,9 +38,10 @@ The example generated client library is contained in `example/client`.
 
 Generated clients will have the following dependencies:
 
-* `fastapi`, `pydantic`, `starlette`
+* `pydantic` for models
 * `httpx` for networking
-* `typing_extensions` for Enums (I eventually hope to replace this with standard enums)
+* `fastapi` for `jsonable_encoder` and OAuth models (I hope to eventually remove this as a dependency)
+* `typing_extensions` for Enums via `Literal` (I eventually hope to replace this with standard enums)
 
 More examples of usage (including auth) are contained in `example/usage_example.py`. 
 
@@ -54,7 +55,7 @@ and will produce a client library at `generated/<client_library_name>`
 
 For example, running
 ```bash
-./scripts/generate.sh client -i https://petstore.swagger.io/v2/swagger.json
+./scripts/generate.sh -p client -- -i https://petstore.swagger.io/v2/swagger.json
 ```
 produces the example client, and places it in `generated/client`.
 

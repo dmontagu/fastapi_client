@@ -14,7 +14,7 @@ ClientT = TypeVar("ClientT", bound="ApiClient")
 
 
 class AsyncApis(Generic[ClientT]):
-    def __init__(self, client: "ClientT"):
+    def __init__(self, client: ClientT):
         self.client = client
 
         self.pet_api = AsyncPetApi(self.client)
