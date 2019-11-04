@@ -55,6 +55,7 @@ while [ $# -gt 0 ]; do
     usage 0
     ;;
   --)
+    shift 1
     break
     ;;
   *)

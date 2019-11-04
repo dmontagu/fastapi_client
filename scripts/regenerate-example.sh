@@ -1,11 +1,11 @@
 #! /usr/bin/env bash
-
 set -e
-DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd .. && pwd)"
-cd "${DIR}"
+
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd .. && pwd)"
+cd "${PROJECT_ROOT}"
 
 # Generate
-./scripts/generate.sh client -i https://petstore.swagger.io/v2/swagger.json
+./scripts/generate.sh -p client -- -i https://petstore.swagger.io/v2/swagger.json
 
 # Replace example
 rm -r example/client >/dev/null 2>&1 || true

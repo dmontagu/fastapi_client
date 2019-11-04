@@ -82,15 +82,9 @@ lock:
 develop:
 	./scripts/develop.sh
 
-
-.PHONY: poetryversion
-poetryversion:
+.PHONY: version  ## Bump the version in pyproject.toml (usage: `make version version=minor`)
+version:
 	poetry version $(version)
-
-.PHONY: version  ## Bump the version in both pyproject.toml and __init__.py (usage: `make version version=minor`)
-version: poetryversion
-	$(eval NEW_VERS := $(shell cat pyproject.toml | grep "^version = \"*\"" | cut -d'"' -f2))
-	@sed -i "" "s/__version__ = .*/__version__ = \"$(NEW_VERS)\"/g" $(pkg_src)/__init__.py
 
 .PHONY: help  ## Display this message
 help:

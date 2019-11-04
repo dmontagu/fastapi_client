@@ -1,8 +1,8 @@
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from starlette.responses import JSONResponse
 
 from client.password_flow_client import TokenSuccessResponse
-from starlette.responses import JSONResponse
 
 HTTP_401_UNAUTHORIZED = 401
 

@@ -25,7 +25,7 @@ main() {
   setup_openapi_generation
   ./scripts/util/openapi-generate.sh -p "${PACKAGE_NAME}" -- "$@"
   add_extra_files
-  ./scripts/_postprocess.sh "${PACKAGE_NAME}"
+  ./scripts/util/postprocess.sh -p "${PACKAGE_NAME}"
   clean_openapi_generator_output
 }
 
@@ -81,6 +81,7 @@ while [ $# -gt 0 ]; do
     usage 0
     ;;
   --)
+    shift 1
     break
     ;;
   *)

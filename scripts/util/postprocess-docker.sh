@@ -37,7 +37,7 @@ validate_inputs() {
 
 merge_generated_models() {
   # Need to merge the generated models into a single file to prevent circular imports
-  cat "$(ls "${PACKAGE_NAME}"/models/*.py | grep -v __init__)" >"${PACKAGE_NAME}"/models.py
+  cat $(ls "${PACKAGE_NAME}"/models/*.py | grep -v __init__) >"${PACKAGE_NAME}"/models.py
   rm -r "${PACKAGE_NAME}"/models >/dev/null 2>&1 || true
 }
 
