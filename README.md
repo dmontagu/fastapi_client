@@ -49,37 +49,39 @@ More examples of usage (including auth) are contained in `example/usage_example.
 
 Using the generator looks like
 ```bash
-./scripts/generate.sh <client_library_name> -i <path_to_openapi_spec>
+./scripts/generate.sh -p <client_library_name> -o <output_path> [--include-auth] -- -i <openapi_json>
 ```
-and will produce a client library at `generated/<client_library_name>`
+and will produce a client library at `<output_path>/<client_library_name>`.
 
 For example, running
 ```bash
-./scripts/generate.sh -p client -- -i https://petstore.swagger.io/v2/swagger.json
+./scripts/generate.sh -p client -o generated --include-auth -- -i https://petstore.swagger.io/v2/swagger.json
 ```
 produces the example client, and places it in `generated/client`.
+(Note: to prevent accidental overwrites, you would need to manually remove `generated/client` if it already exists.)
 
 If you want to replace `<client_library_name>` with a relative package name, I currently recommend using `sed`
-(I hope to improve this eventually). For example, to place the client in `package.my_client`: 
+(I hope to improve this eventually). For example, to place the client in `my_package.my_client`: 
 
 ```bash
-./scripts/generate.sh my_client -i http://localhost/openapi.json
+rm -r generated
+./scripts/generate.sh -p my_client -o generated --include-auth -- -i http://localhost/openapi.json
 
 find generated/my_client -type f -name "*.py" -exec \
-    sed -i'' -e 's/from my_client/from package.my_client/g' {} +
+    sed -i'' -e 's/from my_client/from my_package.my_client/g' {} +
 ```
 
 ### With FastAPI
 
 * To generate a client for a default FastAPI app running on localhost (NOT inside a docker container):
 
-        ./scripts/generate.sh my_client -i http://localhost/openapi.json
+        ./scripts/generate.sh -p my_client -o generated -- -i http://localhost/openapi.json
 
 * Since the generator runs inside docker, if your server is also running in a docker container on the same machine,
 [you may need to provide a special hostname](https://stackoverflow.com/questions/24319662/from-inside-of-a-docker-container-how-do-i-connect-to-the-localhost-of-the-mach).
 On MacOS, this looks like:
  
-        ./scripts/generate.sh my_client -i http://host.docker.internal/api/v1/openapi.json
+        ./scripts/generate.sh -p my_client -o generated -- -i http://host.docker.internal/api/v1/openapi.json
 
 
 ### Generation details
