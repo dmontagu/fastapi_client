@@ -9,3 +9,5 @@ htmlcov/
 generated/
 
 *.pyc
+
+tmp*/

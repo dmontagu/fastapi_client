@@ -40,12 +40,12 @@ mypy-tests:
 
 .PHONY: test  ## Run tests
 test:
-	./scripts/test.sh
+	./scripts/dev/test.sh
 	@echo "All tests passed"
 
 .PHONY: testcov  ## Run tests, generate a coverage report, and open in browser
 testcov:
-	./scripts/testcov.sh
+	./scripts/dev/testcov.sh
 	@echo "opening coverage html in browser"
 	@open htmlcov/index.html
 
@@ -65,6 +65,7 @@ clean:
 	rm -f `find . -type f -name '.*~' `
 	rm -rf `find . -type d -name '*.egg-info' `
 	rm -rf `find . -type d -name 'pip-wheel-metadata' `
+	rm -rf `find . -type d -name 'tmp*' `
 	rm -rf .cache
 	rm -rf .pytest_cache
 	rm -rf .mypy_cache
@@ -80,7 +81,7 @@ lock:
 
 .PHONY: develop  ## Set up the development environment, or reinstall from the lockfile
 develop:
-	./scripts/develop.sh
+	./scripts/dev/install.sh
 
 .PHONY: version  ## Bump the version in pyproject.toml (usage: `make version version=minor`)
 version:
