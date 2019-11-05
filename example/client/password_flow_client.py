@@ -9,12 +9,14 @@ from typing import Any, Dict, List, Optional, Type, TypeVar, Union
 from fastapi.openapi.models import OAuthFlowPassword
 from httpx import AsyncClient, AsyncResponse
 from pydantic import BaseModel, ValidationError
-from starlette.status import HTTP_200_OK, HTTP_400_BAD_REQUEST, HTTP_401_UNAUTHORIZED
 from typing_extensions import Literal
 
-from client.exceptions import UnexpectedResponse
+from example.client.exceptions import UnexpectedResponse
 
 TokenRequestT = TypeVar("TokenRequestT", bound="BaseTokenRequest")
+HTTP_200_OK = 200
+HTTP_400_BAD_REQUEST = 400
+HTTP_401_UNAUTHORIZED = 401
 
 
 class BaseTokenRequest(BaseModel):

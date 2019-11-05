@@ -27,7 +27,7 @@ class AutoAuthClient(ApiClient):
         self.auth_state.password = password
 
 
-def test_auth():
+def test_auth() -> None:
     client = AutoAuthClient(host="http://localhost:8000", tokenUrl="http://localhost:8000/token")
     client.set_creds("username", "password")
     result = client.request_sync(type_=Dict, method="GET", url="/")

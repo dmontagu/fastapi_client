@@ -2,9 +2,10 @@ import uvicorn
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from starlette.responses import JSONResponse
-from starlette.status import HTTP_401_UNAUTHORIZED
 
 from client.password_flow_client import TokenSuccessResponse
+
+HTTP_401_UNAUTHORIZED = 401
 
 app = FastAPI(debug=True)
 reusable_oauth2 = OAuth2PasswordBearer(tokenUrl="/token")
@@ -25,4 +26,9 @@ def get_tokens(form_data: OAuth2PasswordRequestForm = Depends()) -> TokenSuccess
     raise HTTPException(status_code=HTTP_401_UNAUTHORIZED, detail="Not authorized")
 
 
-uvicorn.run(app, host="0.0.0.0", port=8000)
+def main() -> None:
+    uvicorn.run(app, host="0.0.0.0", port=8000)
+
+
+if __name__ == "__main__":
+    main()

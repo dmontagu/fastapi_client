@@ -41,9 +41,10 @@ The example generated client library is contained in `example/client`.
 
 Generated clients will have the following dependencies:
 
-* `fastapi`, `pydantic`, `starlette`
+* `pydantic` for models
 * `httpx` for networking
-* `typing_extensions` for Enums (I eventually hope to replace this with standard enums)
+* `fastapi` for `jsonable_encoder` and OAuth models (I hope to eventually remove this as a dependency)
+* `typing_extensions` for Enums via `Literal` (I eventually hope to replace this with standard enums)
 
 More examples of usage (including auth) are contained in `example/usage_example.py`. 
 
@@ -51,37 +52,31 @@ More examples of usage (including auth) are contained in `example/usage_example.
 
 Using the generator looks like
 ```bash
-./scripts/generate.sh <client_library_name> -i <path_to_openapi_spec>
+./scripts/generate.sh -p <package_name> -o <output_path> [-n <import_name>] [--include-auth] -- -i <openapi_json_url>
 ```
-and will produce a client library at `generated/<client_library_name>`
+and will produce a client library at `<output_path>/<package_name>`.
 
 For example, running
 ```bash
-./scripts/generate.sh client -i https://petstore.swagger.io/v2/swagger.json
+./scripts/generate.sh -p client -o generated -n example.client --include-auth \
+    -- -i https://petstore.swagger.io/v2/swagger.json
 ```
-produces the example client, and places it in `generated/client`.
+produces the example client (along with the OAuth2.0 password flow client), places it in `generated/client`, and
+makes any generated client-referencing imports start with `example.client`.
 
-If you want to replace `<client_library_name>` with a relative package name, I currently recommend using `sed`
-(I hope to improve this eventually). For example, to place the client in `package.my_client`: 
-
-```bash
-./scripts/generate.sh my_client -i http://localhost/openapi.json
-
-find generated/my_client -type f -name "*.py" -exec \
-    sed -i'' -e 's/from my_client/from package.my_client/g' {} +
-```
+(Note: to prevent accidental overwrites, you would need to manually remove `generated/client` if it already exists.)
 
 ### With FastAPI
 
 * To generate a client for a default FastAPI app running on localhost (NOT inside a docker container):
 
-        ./scripts/generate.sh my_client -i http://localhost/openapi.json
+        ./scripts/generate.sh -p my_client -o generated -- -i http://localhost/openapi.json
 
 * Since the generator runs inside docker, if your server is also running in a docker container on the same machine,
 [you may need to provide a special hostname](https://stackoverflow.com/questions/24319662/from-inside-of-a-docker-container-how-do-i-connect-to-the-localhost-of-the-mach).
 On MacOS, this looks like:
  
-        ./scripts/generate.sh my_client -i http://host.docker.internal/api/v1/openapi.json
+        ./scripts/generate.sh -p my_client -o generated -- -i http://host.docker.internal/api/v1/openapi.json
 
 
 ### Generation details

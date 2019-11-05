@@ -1,30 +1,39 @@
 from asyncio import get_event_loop
+from functools import lru_cache
 from typing import Any, Awaitable, Callable, Dict, Generic, Type, TypeVar, overload
 
 from httpx import AsyncClient, AsyncRequest, AsyncResponse
 from pydantic import ValidationError
-from pydantic.generics import GenericModel
-from starlette.status import HTTP_200_OK
 
-from client.api.pet_api import AsyncPetApi, SyncPetApi
-from client.api.store_api import AsyncStoreApi, SyncStoreApi
-from client.api.user_api import AsyncUserApi, SyncUserApi
-from client.exceptions import ApiRequestException, UnexpectedResponse
+from example.client.api.pet_api import AsyncPetApi, SyncPetApi
+from example.client.api.store_api import AsyncStoreApi, SyncStoreApi
+from example.client.api.user_api import AsyncUserApi, SyncUserApi
+from example.client.exceptions import ResponseHandlingException, UnexpectedResponse
+
+ClientT = TypeVar("ClientT", bound="ApiClient")
+
+
+class AsyncApis(Generic[ClientT]):
+    def __init__(self, client: ClientT):
+        self.client = client
+
+        self.pet_api = AsyncPetApi(self.client)
+        self.store_api = AsyncStoreApi(self.client)
+        self.user_api = AsyncUserApi(self.client)
+
+
+class SyncApis(Generic[ClientT]):
+    def __init__(self, client: ClientT):
+        self.client = client
+
+        self.pet_api = SyncPetApi(self.client)
+        self.store_api = SyncStoreApi(self.client)
+        self.user_api = SyncUserApi(self.client)
+
 
 T = TypeVar("T")
-
-
-class _ResultMaker(GenericModel, Generic[T]):
-    result: T
-
-
 Send = Callable[[AsyncRequest], Awaitable[AsyncResponse]]
 MiddlewareT = Callable[[AsyncRequest, Send], Awaitable[AsyncResponse]]
-
-
-class BaseMiddleware:
-    async def __call__(self, request: AsyncRequest, call_next: Send) -> AsyncResponse:
-        return await call_next(request)
 
 
 class ApiClient:
@@ -70,18 +79,18 @@ class ApiClient:
 
     async def send(self, request: AsyncRequest, type_: Type[T]) -> T:
         response = await self.middleware(request, self.send_inner)
-        if response.status_code == HTTP_200_OK:
+        if response.status_code == 200:
             try:
-                return _ResultMaker[type_](result=response.json()).result  # type: ignore
+                return parse_as_type(response.json(), type_)
             except ValidationError as e:
-                raise ApiRequestException(e)
+                raise ResponseHandlingException(e)
         raise UnexpectedResponse.for_response(response)
 
     async def send_inner(self, request: AsyncRequest) -> AsyncResponse:
         try:
             response = await self._async_client.send(request)
         except Exception as e:
-            raise ApiRequestException(e)
+            raise ResponseHandlingException(e)
         return response
 
     def add_middleware(self, middleware: MiddlewareT) -> None:
@@ -96,22 +105,19 @@ class ApiClient:
         self.middleware = new_middleware
 
 
-ClientT = TypeVar("ClientT", bound=ApiClient)
+class BaseMiddleware:
+    async def __call__(self, request: AsyncRequest, call_next: Send) -> AsyncResponse:
+        return await call_next(request)
 
 
-class AsyncApis(Generic[ClientT]):
-    def __init__(self, client: ClientT):
-        self.client = client
+@lru_cache(maxsize=None)
+def _get_parsing_type(type_: Any, source: str) -> Any:
+    from pydantic.main import create_model
 
-        self.pet_api = AsyncPetApi(self.client)
-        self.store_api = AsyncStoreApi(self.client)
-        self.user_api = AsyncUserApi(self.client)
+    type_name = getattr(type_, "__name__", str(type_))
+    return create_model(f"ParsingModel[{type_name}] (for {source})", obj=(type_, ...))
 
 
-class SyncApis(Generic[ClientT]):
-    def __init__(self, client: ClientT):
-        self.client = client
-
-        self.pet_api = SyncPetApi(self.client)
-        self.store_api = SyncStoreApi(self.client)
-        self.user_api = SyncUserApi(self.client)
+def parse_as_type(obj: Any, type_: Type[T]) -> T:
+    model_type = _get_parsing_type(type_, source=parse_as_type.__name__)
+    return model_type(obj=obj).obj

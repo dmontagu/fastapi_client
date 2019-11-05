@@ -7,10 +7,10 @@ from uuid import UUID
 
 from fastapi.encoders import jsonable_encoder
 
-from {{packageName}} import models as m
+from @IMPORT_NAME@ import models as m
 
 if TYPE_CHECKING:
-    from {{packageName}}.api_client import ApiClient
+    from @IMPORT_NAME@.api_client import ApiClient
 
 {{#operations}}
 class _{{classname}}:
