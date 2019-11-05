@@ -4,10 +4,10 @@ from typing import TYPE_CHECKING, Awaitable, Dict
 
 from fastapi.encoders import jsonable_encoder
 
-from client import models as m
+from example.client import models as m
 
 if TYPE_CHECKING:
-    from client.api_client import ApiClient
+    from example.client.api_client import ApiClient
 
 
 class _StoreApi:

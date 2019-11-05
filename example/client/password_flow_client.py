@@ -11,7 +11,7 @@ from httpx import AsyncClient, AsyncResponse
 from pydantic import BaseModel, ValidationError
 from typing_extensions import Literal
 
-from client.exceptions import UnexpectedResponse
+from example.client.exceptions import UnexpectedResponse
 
 TokenRequestT = TypeVar("TokenRequestT", bound="BaseTokenRequest")
 HTTP_200_OK = 200

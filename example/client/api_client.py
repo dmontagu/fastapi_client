@@ -5,10 +5,10 @@ from typing import Any, Awaitable, Callable, Dict, Generic, Type, TypeVar, overl
 from httpx import AsyncClient, AsyncRequest, AsyncResponse
 from pydantic import ValidationError
 
-from client.api.pet_api import AsyncPetApi, SyncPetApi
-from client.api.store_api import AsyncStoreApi, SyncStoreApi
-from client.api.user_api import AsyncUserApi, SyncUserApi
-from client.exceptions import ResponseHandlingException, UnexpectedResponse
+from example.client.api.pet_api import AsyncPetApi, SyncPetApi
+from example.client.api.store_api import AsyncStoreApi, SyncStoreApi
+from example.client.api.user_api import AsyncUserApi, SyncUserApi
+from example.client.exceptions import ResponseHandlingException, UnexpectedResponse
 
 ClientT = TypeVar("ClientT", bound="ApiClient")
 

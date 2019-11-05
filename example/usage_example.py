@@ -3,9 +3,9 @@ from functools import lru_cache
 
 from fastapi.openapi.models import OAuthFlowPassword
 
-from client.api_client import ApiClient, AsyncApis, SyncApis
-from client.auth import AuthMiddleware, AuthState
-from client.models import User
+from example.client.api_client import ApiClient, AsyncApis, SyncApis
+from example.client.auth import AuthMiddleware, AuthState
+from example.client.models import User
 
 
 class AutoAuthClient(ApiClient):

@@ -54,7 +54,7 @@ default: check-format lint mypy test
 
 .PHONY: regenerate  ## Regenerate the example client
 regenerate:
-	./scripts/regenerate-example.sh
+	./scripts/dev/regenerate-example.sh
 	@echo "Regeneration succeeded"
 
 .PHONY: clean  ## Run all CI validation steps without making any changes to code

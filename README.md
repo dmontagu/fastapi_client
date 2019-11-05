@@ -49,27 +49,19 @@ More examples of usage (including auth) are contained in `example/usage_example.
 
 Using the generator looks like
 ```bash
-./scripts/generate.sh -p <client_library_name> -o <output_path> [--include-auth] -- -i <openapi_json>
+./scripts/generate.sh -p <package_name> -o <output_path> [-n <import_name>] [--include-auth] -- -i <openapi_json_url>
 ```
-and will produce a client library at `<output_path>/<client_library_name>`.
+and will produce a client library at `<output_path>/<package_name>`.
 
 For example, running
 ```bash
-./scripts/generate.sh -p client -o generated --include-auth -- -i https://petstore.swagger.io/v2/swagger.json
+./scripts/generate.sh -p client -o generated -n example.client --include-auth \
+    -- -i https://petstore.swagger.io/v2/swagger.json
 ```
-produces the example client, and places it in `generated/client`.
+produces the example client (along with the OAuth2.0 password flow client), places it in `generated/client`, and
+makes any generated client-referencing imports start with `example.client`.
+
 (Note: to prevent accidental overwrites, you would need to manually remove `generated/client` if it already exists.)
-
-If you want to replace `<client_library_name>` with a relative package name, I currently recommend using `sed`
-(I hope to improve this eventually). For example, to place the client in `my_package.my_client`: 
-
-```bash
-rm -r generated
-./scripts/generate.sh -p my_client -o generated --include-auth -- -i http://localhost/openapi.json
-
-find generated/my_client -type f -name "*.py" -exec \
-    sed -i'' -e 's/from my_client/from my_package.my_client/g' {} +
-```
 
 ### With FastAPI
 

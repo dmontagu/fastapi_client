@@ -5,8 +5,8 @@ from typing import Any, Awaitable, Callable, Dict, Generic, Type, TypeVar, overl
 from httpx import AsyncClient, AsyncRequest, AsyncResponse
 from pydantic import ValidationError
 
-{{#apiInfo}}{{#apis}}from {{apiPackage}}.{{classVarName}} import Async{{classname}}, Sync{{classname}}
-{{/apis}}{{/apiInfo}}from {{packageName}}.exceptions import ResponseHandlingException, UnexpectedResponse
+{{#apiInfo}}{{#apis}}from @IMPORT_NAME@.api.{{classVarName}} import Async{{classname}}, Sync{{classname}}
+{{/apis}}{{/apiInfo}}from @IMPORT_NAME@.exceptions import ResponseHandlingException, UnexpectedResponse
 
 ClientT = TypeVar("ClientT", bound="ApiClient")
 

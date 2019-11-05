@@ -9,6 +9,7 @@ CMDNAME=${0##*/}
 INCLUDE_AUTH=""
 OUTPUT_PATH=""
 PACKAGE_NAME=""
+IMPORT_NAME=""
 WORK_DIR=""
 
 usage() {
@@ -16,10 +17,11 @@ usage() {
   cat <<USAGE >&2
 
 Usage:
-  $CMDNAME -p PACKAGE_NAME -o OUTPUT_PATH [--include-auth] -- [*openapi-generator-cli args]
+  $CMDNAME -p PACKAGE_NAME -o OUTPUT_PATH [-n IMPORT_NAME] [--include-auth] -- [*openapi-generator-cli args]
 
 Options:
   -p, --package-name       The name to use for the generated package
+  -n, --import-name        The name to use for imports of the package (defaults to PACKAGE_NAME)
   -o, --output-path        The parent folder to use for the generated package
   -h, --help               Show this message
 USAGE
@@ -37,6 +39,7 @@ main() {
   if [ -n "$INCLUDE_AUTH" ]; then
     add_auth_files "$WORK_DIR"
   fi
+  fill_import_name_templates "$WORK_DIR"
 
   ./scripts/util/postprocess.sh -p "${PACKAGE_NAME}" -w "$WORK_DIR"
   clean_openapi_generator_output "$WORK_DIR"
@@ -57,14 +60,18 @@ validate_inputs() {
     echo "A folder already exists at ${OUTPUT_PATH}/${PACKAGE_NAME}; it must be removed first"
     usage 2
   fi
+
+  if [ -z "$IMPORT_NAME" ]; then
+    IMPORT_NAME="$PACKAGE_NAME"
+  fi
 }
 
 setup_openapi_generation() {
   WORK_DIR=$1
   cp other-templates/.openapi-generator-ignore "$WORK_DIR"
 
-  # Replace PACKAGE_NAME in the ignore with the appropriate value
-  sed -i.bak "s/PACKAGE_NAME/${PACKAGE_NAME}/" "$WORK_DIR"/.openapi-generator-ignore
+  # Replace @PACKAGE_NAME@ in the ignore with the appropriate value
+  sed -i.bak "s/@PACKAGE_NAME@/${PACKAGE_NAME}/" "$WORK_DIR"/.openapi-generator-ignore
   rm "$WORK_DIR"/.openapi-generator-ignore.bak
 }
 
@@ -72,6 +79,20 @@ add_auth_files() {
   WORK_DIR=$1
   add_extra_python_template "$WORK_DIR" auth
   add_extra_python_template "$WORK_DIR" password_flow_client
+}
+
+fill_import_name_templates() {
+  WORK_DIR=$1
+  PACKAGE_DIR="$WORK_DIR"/"$PACKAGE_NAME"
+  fill_import_name_template "$PACKAGE_DIR"/api_client.py
+  fill_import_name_template "$PACKAGE_DIR"/__init__.py
+
+  pushd "${PACKAGE_DIR}/api"
+  find . -name "*.py" | while read -r filename; do
+    fill_import_name_template "$filename"
+  done
+  popd
+
 }
 
 clean_openapi_generator_output() {
@@ -93,8 +114,13 @@ add_extra_python_template() {
 
   PACKAGE_DIR="$WORK_DIR"/"$PACKAGE_NAME"
   cp other-templates/"$TEMPLATE_NAME".template "$PACKAGE_DIR"/"$TEMPLATE_NAME".py
-  sed -i.bak "s/PACKAGE_NAME/${PACKAGE_NAME}/" "$PACKAGE_DIR"/"$TEMPLATE_NAME".py
-  rm "$PACKAGE_DIR"/"$TEMPLATE_NAME".py.bak
+  fill_import_name_template "$PACKAGE_DIR"/"$TEMPLATE_NAME".py
+}
+
+fill_import_name_template() {
+  python_filename="$1"
+  sed -i.bak "s/@IMPORT_NAME@/${IMPORT_NAME}/" "$python_filename"
+  rm "$python_filename".bak
 }
 
 while [ $# -gt 0 ]; do
@@ -105,6 +131,10 @@ while [ $# -gt 0 ]; do
     ;;
   -o | --output-path)
     OUTPUT_PATH=$2
+    shift 2
+    ;;
+  -n | --import-name)
+    IMPORT_NAME=$2
     shift 2
     ;;
   -h | --help)

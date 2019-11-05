@@ -6,9 +6,9 @@ from fastapi.openapi.models import OAuthFlowPassword
 from httpx import AsyncRequest, AsyncResponse
 from pydantic import BaseModel
 
-from client.api_client import Send
-from client.exceptions import UnexpectedResponse
-from client.password_flow_client import (
+from example.client.api_client import Send
+from example.client.exceptions import UnexpectedResponse
+from example.client.password_flow_client import (
     AccessTokenRequest,
     PasswordFlowClient,
     RefreshTokenRequest,

@@ -47,7 +47,7 @@ generate_in_docker() {
     -g python \
     -o /generator-output \
     --package-name="${PACKAGE_NAME}" \
-    --additional-properties=generateSourceCodeOnly=true,packageName="${PACKAGE_NAME}" \
+    --additional-properties=generateSourceCodeOnly=true \
     -t /local/openapi-python-templates \
     --type-mappings array=List,uuid=UUID,file=IO \
     "$@"
