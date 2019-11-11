@@ -12,6 +12,8 @@ PACKAGE_NAME=""
 IMPORT_NAME=""
 WORK_DIR=""
 TEMP_DIR=""
+MAP_LOCALHOST=""
+
 
 usage() {
   exitcode="$1"
@@ -26,6 +28,7 @@ Options:
   -o, --output-path        The parent folder to use for the generated package
   -i, --input              The location of the OpenAPI spec, as URL or file
   -t, --temp-dir           The location for temporary files
+  -m, --map-localhost      (OSX): Map localhost / 127.0.0.1 to host.docker.internal
   -h, --help               Show this message
 USAGE
   exit "$exitcode"
@@ -76,6 +79,10 @@ validate_inputs() {
   fi
   if [ -z "$IMPORT_NAME" ]; then
     IMPORT_NAME="$PACKAGE_NAME"
+  fi
+
+  if [ ! -z "$MAP_LOCALHOST" ] && [ "$(uname -s)" == "Darwin" ]; then
+    INPUT=$(echo "$INPUT" | sed -E 's%^(https?://)(localhost|127\.0\.0\.1)([:/])%\1host.docker.internal\3%')
   fi
 }
 
@@ -160,6 +167,10 @@ while [ $# -gt 0 ]; do
   -t | --temp-dir)
     TEMP_DIR=$2
     shift 2
+    ;;
+  -m | --map-localhost)
+    MAP_LOCALHOST="yes"
+    shift 1
     ;;
   --include-auth)
     INCLUDE_AUTH="yes"
