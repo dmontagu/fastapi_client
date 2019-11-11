@@ -2,12 +2,12 @@
 
 set -e
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd .. && pwd)"
-cd "${PROJECT_ROOT}"
 
 CMDNAME=${0##*/}
 
 INCLUDE_AUTH=""
 OUTPUT_PATH=""
+INPUT=""
 PACKAGE_NAME=""
 IMPORT_NAME=""
 WORK_DIR=""
@@ -24,6 +24,7 @@ Options:
   -p, --package-name       The name to use for the generated package
   -n, --import-name        The name to use for imports of the package (defaults to PACKAGE_NAME)
   -o, --output-path        The parent folder to use for the generated package
+  -i, --input              The location of the OpenAPI spec, as URL or file
   -t, --temp-dir           The location for temporary files
   -h, --help               Show this message
 USAGE
@@ -36,7 +37,9 @@ main() {
   WORK_DIR=$(mktemp -d "$TEMP_DIR/tmp.XXXXXXXXX")
   echo "Storing intermediate outputs in ${WORK_DIR}; it will be removed if generation is successful"
   setup_openapi_generation "$WORK_DIR"
-  ./scripts/util/openapi-generate.sh -p "$PACKAGE_NAME" -w "$WORK_DIR" -- "$@"
+  "${PROJECT_ROOT}/scripts/util/openapi-generate.sh" -p "$PACKAGE_NAME" -w "$WORK_DIR" -i "$INPUT" -- "$@"
+
+  cd "${PROJECT_ROOT}"
 
   if [ -n "$INCLUDE_AUTH" ]; then
     add_auth_files "$WORK_DIR"
@@ -58,8 +61,13 @@ validate_inputs() {
     echo "Error: you need to provide --output-path argument"
     usage 2
   fi
+  OUTPUT_PATH="$(cd "$OUTPUT_PATH" && pwd)"
   if [ -d "${OUTPUT_PATH}/${PACKAGE_NAME}" ]; then
     echo "A folder already exists at ${OUTPUT_PATH}/${PACKAGE_NAME}; it must be removed first"
+    usage 2
+  fi
+  if [ -z "$INPUT" ]; then
+    echo "Error: you need to provide --input argument"
     usage 2
   fi
 
@@ -73,7 +81,7 @@ validate_inputs() {
 
 setup_openapi_generation() {
   WORK_DIR=$1
-  cp other-templates/.openapi-generator-ignore "$WORK_DIR"
+  cp "${PROJECT_ROOT}/other-templates/.openapi-generator-ignore" "$WORK_DIR"
 
   # Replace @PACKAGE_NAME@ in the ignore with the appropriate value
   sed -i.bak "s/@PACKAGE_NAME@/${PACKAGE_NAME}/" "$WORK_DIR"/.openapi-generator-ignore
@@ -136,6 +144,10 @@ while [ $# -gt 0 ]; do
     ;;
   -o | --output-path)
     OUTPUT_PATH=$2
+    shift 2
+    ;;
+  -i | --input)
+    INPUT=$2
     shift 2
     ;;
   -n | --import-name)
