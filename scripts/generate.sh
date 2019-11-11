@@ -11,6 +11,7 @@ OUTPUT_PATH=""
 PACKAGE_NAME=""
 IMPORT_NAME=""
 WORK_DIR=""
+TEMP_DIR=""
 
 usage() {
   exitcode="$1"
@@ -23,6 +24,7 @@ Options:
   -p, --package-name       The name to use for the generated package
   -n, --import-name        The name to use for imports of the package (defaults to PACKAGE_NAME)
   -o, --output-path        The parent folder to use for the generated package
+  -t, --temp-dir           The location for temporary files
   -h, --help               Show this message
 USAGE
   exit "$exitcode"
@@ -31,7 +33,7 @@ USAGE
 main() {
   validate_inputs
 
-  WORK_DIR=$(mktemp -d "$(pwd)/tmp.XXXXXXXXX")
+  WORK_DIR=$(mktemp -d "$TEMP_DIR/tmp.XXXXXXXXX")
   echo "Storing intermediate outputs in ${WORK_DIR}; it will be removed if generation is successful"
   setup_openapi_generation "$WORK_DIR"
   ./scripts/util/openapi-generate.sh -p "$PACKAGE_NAME" -w "$WORK_DIR" -- "$@"
@@ -61,6 +63,9 @@ validate_inputs() {
     usage 2
   fi
 
+  if [ -z "$TEMP_DIR" ]; then
+    TEMP_DIR="$PROJECT_ROOT"
+  fi
   if [ -z "$IMPORT_NAME" ]; then
     IMPORT_NAME="$PACKAGE_NAME"
   fi
@@ -139,6 +144,10 @@ while [ $# -gt 0 ]; do
     ;;
   -h | --help)
     usage 0
+    ;;
+  -t | --temp-dir)
+    TEMP_DIR=$2
+    shift 2
     ;;
   --include-auth)
     INCLUDE_AUTH="yes"
