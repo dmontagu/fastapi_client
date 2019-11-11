@@ -50,7 +50,7 @@ class _{{classname}}:
 {{#queryParams}}
 {{^required}}
         if {{paramName}} is not None:
-            query_params["{{baseName}}"] = str({{paramName}})
+            query_params["{{baseName}}"] = {{#isListContainer}}[str({{paramName}}_item) for {{paramName}}_item in {{paramName}}]{{/isListContainer}}{{^isListContainer}}str({{paramName}}){{/isListContainer}}
 {{/required}}
 {{/queryParams}}
 
