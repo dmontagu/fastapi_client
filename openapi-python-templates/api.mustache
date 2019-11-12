@@ -12,12 +12,14 @@ from @IMPORT_NAME@ import models as m
 if TYPE_CHECKING:
     from @IMPORT_NAME@.api_client import ApiClient
 
+
 {{#operations}}
 class _{{classname}}:
     def __init__(self, api_client: "ApiClient"):
         self.api_client = api_client
+
 {{#operation}}
-    def _build_for_{{operationId}}(self, {{#allParams}}{{#required}}{{paramName}}: {{>_dataTypeApi}}{{/required}}{{^required}}{{paramName}}: {{>_dataTypeApi}} = None{{/required}}, {{/allParams}}) -> Awaitable[{{>_returnType}}]:
+    def _build_for_{{operationId}}(self, {{#allParams}}{{#required}}{{paramName}}: {{>_dataTypeApi}}{{/required}}{{^required}}{{paramName}}: {{>_dataTypeApi}} = None{{/required}}{{#hasMore}}, {{/hasMore}}{{/allParams}}) -> Awaitable[{{>_returnType}}]:
 {{#notes}}
         """
         {{{notes}}}
@@ -27,7 +29,7 @@ class _{{classname}}:
         path_params = {
 {{#pathParams}}
 {{#required}}
-            "{{baseName}}": str({{paramName}}),
+            "{{baseName}}": str({{paramName}}){{#hasMore}},{{/hasMore}}
 {{/required}}
 {{/pathParams}}
         }
@@ -43,7 +45,7 @@ class _{{classname}}:
         query_params = {
 {{#queryParams}}
 {{#required}}
-            "{{baseName}}": str({{paramName}}),
+            "{{baseName}}": str({{paramName}}){{#hasMore}},{{/hasMore}}
 {{/required}}
 {{/queryParams}}
         }
@@ -117,7 +119,7 @@ class _{{classname}}:
             {{#cookieParams.0}}cookies=cookies,{{/cookieParams.0}}
             {{#formParams.0}}data=data,
             files=files or None{{/formParams.0}}
-            {{#bodyParam}}json=body,{{/bodyParam}}
+            {{#bodyParam}}json=body{{/bodyParam}}
         )
 
 {{/operation}}
@@ -126,13 +128,13 @@ class _{{classname}}:
 {{#operations}}
 class Async{{classname}}(_{{classname}}):
 {{#operation}}
-    async def {{operationId}}(self, {{#allParams}}{{#required}}{{paramName}}: {{>_dataTypeApi}}{{/required}}{{^required}}{{paramName}}: {{>_dataTypeApi}} = None{{/required}}, {{/allParams}}) -> {{>_returnType}}:
+    async def {{operationId}}(self, {{#allParams}}{{#required}}{{paramName}}: {{>_dataTypeApi}}{{/required}}{{^required}}{{paramName}}: {{>_dataTypeApi}} = None{{/required}}{{#hasMore}}, {{/hasMore}}{{/allParams}}) -> {{>_returnType}}:
 {{#notes}}
         """
         {{{notes}}}
         """
 {{/notes}}
-        return await self._build_for_{{operationId}}({{#allParams}}{{paramName}}={{paramName}}, {{/allParams}})
+        return await self._build_for_{{operationId}}({{#allParams}}{{paramName}}={{paramName}}{{#hasMore}}, {{/hasMore}}{{/allParams}})
 
 {{/operation}}
 {{/operations}}
@@ -140,13 +142,13 @@ class Async{{classname}}(_{{classname}}):
 {{#operations}}
 class Sync{{classname}}(_{{classname}}):
 {{#operation}}
-    def {{operationId}}(self, {{#allParams}}{{#required}}{{paramName}}: {{>_dataTypeApi}}{{/required}}{{^required}}{{paramName}}: {{>_dataTypeApi}} = None{{/required}}, {{/allParams}}) -> {{>_returnType}}:
+    def {{operationId}}(self, {{#allParams}}{{#required}}{{paramName}}: {{>_dataTypeApi}}{{/required}}{{^required}}{{paramName}}: {{>_dataTypeApi}} = None{{/required}}{{#hasMore}}, {{/hasMore}}{{/allParams}}) -> {{>_returnType}}:
 {{#notes}}
         """
         {{{notes}}}
         """
 {{/notes}}
-        coroutine = self._build_for_{{operationId}}({{#allParams}}{{paramName}}={{paramName}}, {{/allParams}})
+        coroutine = self._build_for_{{operationId}}({{#allParams}}{{paramName}}={{paramName}}{{#hasMore}}, {{/hasMore}}{{/allParams}})
         return get_event_loop().run_until_complete(coroutine)
 {{/operation}}
 {{/operations}}

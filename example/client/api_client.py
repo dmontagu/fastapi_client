@@ -40,7 +40,7 @@ class ApiClient:
     def __init__(self, host: str = None, **kwargs: Any) -> None:
         self.host = host
         self.middleware: MiddlewareT = BaseMiddleware()
-        self._async_client = AsyncClient()
+        self._async_client = AsyncClient(**kwargs)
 
     @overload
     async def request(

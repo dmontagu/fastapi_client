@@ -20,13 +20,13 @@ usage() {
   cat <<USAGE >&2
 
 Usage:
-  $CMDNAME -p PACKAGE_NAME -o OUTPUT_PATH [-n IMPORT_NAME] [--include-auth] -- [*openapi-generator-cli args]
+  $CMDNAME -i INPUT -p PACKAGE_NAME -o OUTPUT_PATH [-n IMPORT_NAME] [--include-auth] -- [*openapi-generator-cli args]
 
 Options:
+  -i, --input              The location of the OpenAPI spec, as URL or file
   -p, --package-name       The name to use for the generated package
   -n, --import-name        The name to use for imports of the package (defaults to PACKAGE_NAME)
   -o, --output-path        The parent folder to use for the generated package
-  -i, --input              The location of the OpenAPI spec, as URL or file
   -t, --temp-dir           The location for temporary files
   -m, --map-localhost      (OSX): Map localhost / 127.0.0.1 to host.docker.internal
   -h, --help               Show this message
@@ -64,6 +64,7 @@ validate_inputs() {
     echo "Error: you need to provide --output-path argument"
     usage 2
   fi
+  mkdir -p "$OUTPUT_PATH"
   OUTPUT_PATH="$(cd "$OUTPUT_PATH" && pwd)"
   if [ -d "${OUTPUT_PATH}/${PACKAGE_NAME}" ]; then
     echo "A folder already exists at ${OUTPUT_PATH}/${PACKAGE_NAME}; it must be removed first"
