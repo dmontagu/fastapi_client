@@ -1,7 +1,3 @@
-"""
-Currently, you need to manually ensure the server in `tests/run_auth_app.py`
-is running in a separate process before running this test.
-"""
 from typing import Dict
 
 from fastapi.openapi.models import OAuthFlowPassword

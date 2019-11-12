@@ -52,14 +52,22 @@ More examples of usage (including auth) are contained in `example/usage_example.
 
 Using the generator looks like
 ```bash
-./scripts/generate.sh -p <package_name> -o <output_path> [-n <import_name>] [--include-auth] -- -i <openapi_json_url>
+./scripts/generate.sh -i <openapi_json> -p <package_name> -o <output_path>
+  [-n <import_name>] [--include-auth]
+  [--] [*openapi-generator-args]
 ```
 and will produce a client library at `<output_path>/<package_name>`.
 
+The OpenAPI json input can be either a URL or a local file path.
+
 For example, running
 ```bash
-./scripts/generate.sh -p client -o generated -n example.client --include-auth \
-    -- -i https://petstore.swagger.io/v2/swagger.json
+./scripts/generate.sh \
+  -i https://petstore.swagger.io/v2/swagger.json \
+  -p client \
+  -o generated \
+  -n example.client \
+  --include-auth
 ```
 produces the example client (along with the OAuth2.0 password flow client), places it in `generated/client`, and
 makes any generated client-referencing imports start with `example.client`.
@@ -70,13 +78,14 @@ makes any generated client-referencing imports start with `example.client`.
 
 * To generate a client for a default FastAPI app running on localhost (NOT inside a docker container):
 
-        ./scripts/generate.sh -p my_client -o generated -- -i http://localhost/openapi.json
+        ./scripts/generate.sh -i http://localhost/openapi.json -p my_client -o generated
 
 * Since the generator runs inside docker, if your server is also running in a docker container on the same machine,
 [you may need to provide a special hostname](https://stackoverflow.com/questions/24319662/from-inside-of-a-docker-container-how-do-i-connect-to-the-localhost-of-the-mach).
-On MacOS, this looks like:
+Passing the `--map-localhost` argument will make the script attempt to perform this automatically:
  
-        ./scripts/generate.sh -p my_client -o generated -- -i http://host.docker.internal/api/v1/openapi.json
+        ./scripts/generate.sh --map-localhost -i http://localhost/openapi.json -p my_client -o generated
+        # Transforms the input to http://host.docker.internal/openapi.json 
 
 
 ### Generation details

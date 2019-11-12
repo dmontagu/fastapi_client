@@ -6,7 +6,7 @@ cd "${PROJECT_ROOT}"
 
 # Generate
 rm -r generated >/dev/null 2>&1 || true
-./scripts/generate.sh -p client -n example.client -o generated --include-auth -- -i https://petstore.swagger.io/v2/swagger.json
+./scripts/generate.sh -p client -n example.client -o generated --include-auth -i https://petstore.swagger.io/v2/swagger.json
 
 # Replace example
 rm -r example/client >/dev/null 2>&1 || true
