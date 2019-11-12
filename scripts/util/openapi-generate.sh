@@ -9,6 +9,8 @@ PACKAGE_NAME=""
 INPUT=""
 WORK_DIR=""
 
+OPENAPI_IMAGE="openapitools/openapi-generator-cli:v4.1.2"
+
 usage() {
   exitcode="$1"
   cat <<USAGE >&2
@@ -54,7 +56,7 @@ validate_inputs() {
 }
 
 generate_in_docker_http() {
-  docker run --rm -v "$WORK_DIR":/generator-output -v "$PROJECT_ROOT":/local openapitools/openapi-generator-cli generate \
+  docker run --rm -v "$WORK_DIR":/generator-output -v "$PROJECT_ROOT":/local $OPENAPI_IMAGE generate \
     -g python \
     -o /generator-output \
     --package-name="${PACKAGE_NAME}" \
@@ -69,8 +71,8 @@ generate_in_docker_file() {
   INPUT_FILE="$(cd "$(dirname "$INPUT")" && pwd )"/"$(basename "$INPUT")"
 
   docker run --rm -v "$WORK_DIR":/generator-output -v "$PROJECT_ROOT":/local -v "${INPUT_FILE}":/openapi.json \
-  openapitools/openapi-generator-cli generate \
-   -g python \
+    $OPENAPI_IMAGE generate \
+    -g python \
     -o /generator-output \
     --package-name="${PACKAGE_NAME}" \
     --additional-properties=generateSourceCodeOnly=true \
