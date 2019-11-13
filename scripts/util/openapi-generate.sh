@@ -77,7 +77,7 @@ generate_in_docker_file() {
     --package-name="${PACKAGE_NAME}" \
     --additional-properties=generateSourceCodeOnly=true \
     -t /local/openapi-python-templates \
-    --type-mappings array=List,uuid=UUID,file=IO \
+    --type-mappings array=List,uuid=UUID,file=IO,object=Any \
     -i /openapi.json \
     "$@"
 }
