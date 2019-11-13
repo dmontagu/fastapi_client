@@ -118,7 +118,7 @@ class _{{classname}}:
             {{#headerParams.0}}headers=headers,{{/headerParams.0}}
             {{#cookieParams.0}}cookies=cookies,{{/cookieParams.0}}
             {{#formParams.0}}data=data,
-            files=files or None{{/formParams.0}}
+            files=files{{^isMultipart}} or None{{/isMultipart}}{{/formParams.0}}
             {{#bodyParam}}json=body{{/bodyParam}}
         )
 
