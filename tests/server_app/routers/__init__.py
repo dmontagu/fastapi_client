@@ -1,5 +1,5 @@
 """
 Import all routers
 """
-from .auth import auth_router
-from .client import client_router
+from .auth import auth_router  # noqa F401
+from .client import client_router  # noqa F401

@@ -2,11 +2,12 @@
 Test oauth apis
 """
 from typing import Optional
-from fastapi import Depends, HTTPException, APIRouter
+
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from pydantic import BaseModel
 from starlette.responses import JSONResponse
 from starlette.status import HTTP_401_UNAUTHORIZED
-from pydantic import BaseModel
 
 
 class TokenSuccessResponse(BaseModel):
@@ -14,6 +15,7 @@ class TokenSuccessResponse(BaseModel):
     Copied from the test client. Required as we delete the test client & re-create it
     from this code before the test run.
     """
+
     access_token: str
     token_type: str
     expires_in: Optional[int]
@@ -21,7 +23,7 @@ class TokenSuccessResponse(BaseModel):
     scope: Optional[str]
 
 
-def auth_router():
+def auth_router() -> APIRouter:
     """
     Creates & returns the router for auth testing endpoints
     """

@@ -6,7 +6,7 @@ cd "${DIR}"
 
 export PYTHONPATH="test_client"
 
-pytest tests --cov=example
+pytest tests --cov=tests
 
 echo "building coverage html"
 coverage html
