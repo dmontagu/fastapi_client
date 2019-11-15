@@ -4,6 +4,7 @@
 .mypy_cache/
 .pytest_cache/
 .coverage
+.coverage.*
 htmlcov/
 
 generated/
@@ -11,3 +12,6 @@ generated/
 *.pyc
 
 tmp*/
+
+/tests/generated_client/
+/tests/logs/
