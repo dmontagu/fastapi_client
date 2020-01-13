@@ -29,7 +29,7 @@ USAGE
 main() {
   validate_inputs
   docker build -t fastapi-client-generator:latest .
-  docker run --rm -v "$WORK_DIR":/generator-output fastapi-client-generator:latest -p "${PACKAGE_NAME}"
+  docker run --rm --user $(id -u):$(id -g) -v "$WORK_DIR":/generator-output fastapi-client-generator:latest -p "${PACKAGE_NAME}"
 }
 
 validate_inputs() {

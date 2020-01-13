@@ -1,19 +1,21 @@
+from __future__ import annotations
+
 from datetime import datetime
-from typing import Optional, List
+from typing import Optional, List, Dict
 from typing import Any  # noqa
 from typing_extensions import Literal
 from uuid import UUID
-from pydantic import BaseModel, Schema
+from pydantic import BaseModel, Field
 
 {{#models}}
 {{#model}}
 class {{classname}}(BaseModel):
 {{#vars}}
 {{#isEnum}}
-    {{name}}: 'Literal[{{#allowableValues}}{{#values}}"{{{this}}}"{{^-last}}, {{/-last}}{{/values}}{{/allowableValues}}]' = Schema({{#required}}...{{/required}}{{^required}}None{{/required}}, alias="{{baseName}}")  # type: ignore
+    {{name}}: Literal[{{#allowableValues}}{{#values}}"{{{this}}}"{{^-last}}, {{/-last}}{{/values}}{{/allowableValues}}] = Field({{#required}}...{{/required}}{{^required}}None{{/required}}, alias="{{baseName}}")  # type: inore
 {{/isEnum}}
 {{^isEnum}}
-    {{name}}: "{{^required}}Optional[{{/required}}{{>_dataTypeModel}}{{^required}}]{{/required}}" = Schema({{#required}}...{{/required}}{{^required}}None{{/required}}, alias="{{baseName}}")  # type: ignore
+    {{name}}: {{^required}}Optional[{{/required}}{{>_dataTypeModel}}{{^required}}]{{/required}} = Field({{#required}}...{{/required}}{{^required}}None{{/required}}, alias="{{baseName}}")  # type: ignore
 {{/isEnum}}
 {{/vars}}
 {{/model}}

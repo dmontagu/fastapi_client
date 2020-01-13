@@ -56,7 +56,7 @@ validate_inputs() {
 }
 
 generate_in_docker_http() {
-  docker run --rm -v "$WORK_DIR":/generator-output -v "$PROJECT_ROOT":/local $OPENAPI_IMAGE generate \
+  docker run --user $(id -u):$(id -g) --rm -v "$WORK_DIR":/generator-output -v "$PROJECT_ROOT":/local $OPENAPI_IMAGE generate \
     -g python \
     -o /generator-output \
     --package-name="${PACKAGE_NAME}" \
@@ -70,7 +70,7 @@ generate_in_docker_http() {
 generate_in_docker_file() {
   INPUT_FILE="$(cd "$(dirname "$INPUT")" && pwd )"/"$(basename "$INPUT")"
 
-  docker run --rm -v "$WORK_DIR":/generator-output -v "$PROJECT_ROOT":/local -v "${INPUT_FILE}":/openapi.json \
+  docker run --user $(id -u):$(id -g) --rm -v "$WORK_DIR":/generator-output -v "$PROJECT_ROOT":/local -v "${INPUT_FILE}":/openapi.json \
     $OPENAPI_IMAGE generate \
     -g python \
     -o /generator-output \

@@ -6,7 +6,7 @@ authors = ["David Montague"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
-fastapi = "^0.42.0"
+fastapi = "*"
 pydantic = "*"
 httpx = "*"
 typing_extensions = "*"
@@ -17,7 +17,7 @@ starlette = "*"
 pytest = "*"
 pytest-cov = "*"
 coverage = "*"
-black = { version = "*", allows-prereleases = true }
+black = { version = "*", allow-prereleases = true }
 flake8 = "*"
 isort = "*"
 mypy = "*"

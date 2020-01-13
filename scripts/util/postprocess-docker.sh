@@ -54,7 +54,7 @@ delete_unused() {
 apply_formatters() {
   autoflake --remove-all-unused-imports --recursive --remove-unused-variables --in-place "${PACKAGE_NAME}" --exclude=__init__.py
   isort -w 120 -m 3 -tc -fgw 0 -ca -p "${PACKAGE_NAME}" -rc "${PACKAGE_NAME}"
-  black -l 120 --target-version py36 "${PACKAGE_NAME}"
+  black -l 120 --target-version py37 "${PACKAGE_NAME}"
 }
 
 while [ $# -gt 0 ]; do
