@@ -1,10 +1,10 @@
 import inspect
 
-import @IMPORT_NAME@.models  # noqa F401
+from @IMPORT_NAME@ import models  # noqa F401
 from @IMPORT_NAME@.api_client import ApiClient, AsyncApis, SyncApis  # noqa F401
 
 
-for model in inspect.getmembers(@IMPORT_NAME@.models, inspect.isclass):
+for model in inspect.getmembers(models, inspect.isclass):
 	if model[1].__module__ == "@IMPORT_NAME@.models":
 		model_class = model[1]
 		model_class.update_forward_refs()
