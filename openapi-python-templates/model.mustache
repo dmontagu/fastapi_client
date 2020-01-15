@@ -10,10 +10,10 @@ from pydantic import BaseModel, Field
 class {{classname}}(BaseModel):
 {{#vars}}
 {{#isEnum}}
-    {{name}}: "Literal[{{#allowableValues}}{{#values}}'{{{this}}}'{{^-last}}, {{/-last}}{{/values}}{{/allowableValues}}]" = Field({{#required}}...{{/required}}{{^required}}None{{/required}}, alias="{{baseName}}")  # type: inore
+    {{name}}: "Literal[{{#allowableValues}}{{#values}}'{{{this}}}'{{^-last}}, {{/-last}}{{/values}}{{/allowableValues}}]" = Field({{#required}}...{{/required}}{{^required}}None{{/required}}, alias="{{baseName}}")
 {{/isEnum}}
 {{^isEnum}}
-    {{name}}: "{{^required}}Optional[{{/required}}{{>_dataTypeModel}}{{^required}}]{{/required}}" = Field({{#required}}...{{/required}}{{^required}}None{{/required}}, alias="{{baseName}}")  # type: ignore
+    {{name}}: "{{^required}}Optional[{{/required}}{{>_dataTypeModel}}{{^required}}]{{/required}}" = Field({{#required}}...{{/required}}{{^required}}None{{/required}}, alias="{{baseName}}")
 {{/isEnum}}
 {{/vars}}
 {{/model}}
