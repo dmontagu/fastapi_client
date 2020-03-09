@@ -29,7 +29,7 @@ Options:
   -o, --output-path        The parent folder to use for the generated package
   -t, --temp-dir           The location for temporary files
   -m, --map-localhost      (OSX): Map localhost / 127.0.0.1 to host.docker.internal
-  -m, --with-meta          Generate meta-data (setup.py, docs, tests)
+  --with-meta              Generate meta-data (setup.py, docs, tests)
   -h, --help               Show this message
 USAGE
   exit "$exitcode"
