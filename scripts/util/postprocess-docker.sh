@@ -23,7 +23,6 @@ USAGE
 
 main() {
   validate_inputs
-  add_py_typed
   merge_generated_models
   delete_unused
   apply_formatters
@@ -42,10 +41,6 @@ merge_generated_models() {
   # shellcheck disable=SC2010
   cat $(ls "${PACKAGE_NAME}"/models/*.py | grep -v __init__) >"${PACKAGE_NAME}"/models.py
   rm -r "${PACKAGE_NAME}"/models >/dev/null 2>&1 || true
-}
-
-add_py_typed() {
-  touch "${PACKAGE_NAME}"/py.typed
 }
 
 delete_unused() {
