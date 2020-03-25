@@ -38,20 +38,20 @@ class _UserApi:
         """
         path_params = {"username": str(username)}
 
-        return self.api_client.request(type_=None, method="DELETE", url="/user/{username}", path_params=path_params)
+        return self.api_client.request(type_=None, method="DELETE", url="/user/{username}", path_params=path_params,)
 
     def _build_for_get_user_by_name(self, username: str) -> Awaitable[m.User]:
         path_params = {"username": str(username)}
 
-        return self.api_client.request(type_=m.User, method="GET", url="/user/{username}", path_params=path_params)
+        return self.api_client.request(type_=m.User, method="GET", url="/user/{username}", path_params=path_params,)
 
     def _build_for_login_user(self, username: str, password: str) -> Awaitable[str]:
         query_params = {"username": str(username), "password": str(password)}
 
-        return self.api_client.request(type_=str, method="GET", url="/user/login", params=query_params)
+        return self.api_client.request(type_=str, method="GET", url="/user/login", params=query_params,)
 
     def _build_for_logout_user(self,) -> Awaitable[None]:
-        return self.api_client.request(type_=None, method="GET", url="/user/logout")
+        return self.api_client.request(type_=None, method="GET", url="/user/logout",)
 
     def _build_for_update_user(self, username: str, body: m.User) -> Awaitable[None]:
         """

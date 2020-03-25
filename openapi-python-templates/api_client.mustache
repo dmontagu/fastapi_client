@@ -2,8 +2,7 @@ from asyncio import get_event_loop
 from functools import lru_cache
 from typing import Any, Awaitable, Callable, Dict, Generic, Type, TypeVar, overload
 
-from httpx import AsyncClient
-from httpx.models import Request, Response
+from httpx import AsyncClient, Request, Response
 from pydantic import ValidationError
 
 {{#apiInfo}}{{#apis}}from @IMPORT_NAME@.api.{{classVarName}} import Async{{classname}}, Sync{{classname}}

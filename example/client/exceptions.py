@@ -1,8 +1,7 @@
 import json
 from typing import Any, Dict, Optional
 
-from httpx import AsyncResponse
-from httpx.models import Headers
+from httpx import Headers, Response
 
 MAX_CONTENT = 200
 
@@ -19,7 +18,7 @@ class UnexpectedResponse(ApiException):
         self.headers = headers
 
     @staticmethod
-    def for_response(response: AsyncResponse) -> "ApiException":
+    def for_response(response: Response) -> "ApiException":
         return UnexpectedResponse(
             status_code=response.status_code,
             reason_phrase=response.reason_phrase,

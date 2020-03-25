@@ -1,8 +1,7 @@
 import json
 from typing import Any, Dict, Optional
 
-from httpx import Response
-from httpx.models import Headers
+from httpx import Response, Headers
 
 MAX_CONTENT = 200
 
