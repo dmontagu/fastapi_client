@@ -1,6 +1,11 @@
 #! /usr/bin/env bash
 
 set -e
+
+# Prevent automatic path conversions by MSYS-based bash. 
+# It's revelant only for Windows
+export MSYS_NO_PATHCONV=1 
+
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd .. && pwd)"
 
 CMDNAME=${0##*/}
