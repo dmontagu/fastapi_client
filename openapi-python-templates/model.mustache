@@ -7,6 +7,18 @@ from pydantic import BaseModel, Field
 
 {{#models}}
 {{#model}}
+
+{{#allowableValues}}
+from enum import Enum
+
+class {{classname}}(str, Enum):
+{{#enumVars}}
+    {{name}} = {{{value}}}{{^-last}}
+{{/-last}}
+{{/enumVars}}
+{{/allowableValues}}
+
+{{^allowableValues}}
 class {{classname}}(BaseModel):
 {{#vars}}
 {{#isEnum}}
@@ -16,5 +28,7 @@ class {{classname}}(BaseModel):
     {{name}}: "{{^required}}Optional[{{/required}}{{>_dataTypeModel}}{{^required}}]{{/required}}" = Field({{#required}}...{{/required}}{{^required}}None{{/required}}, alias="{{baseName}}")
 {{/isEnum}}
 {{/vars}}
+{{/allowableValues}}
+
 {{/model}}
 {{/models}}
