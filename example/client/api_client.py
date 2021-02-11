@@ -1,9 +1,8 @@
 from asyncio import get_event_loop
-from functools import lru_cache
 from typing import Any, Awaitable, Callable, Dict, Generic, Type, TypeVar, overload
 
-from httpx import AsyncClient, AsyncRequest, AsyncResponse
-from pydantic import ValidationError
+from httpx import AsyncClient, Request, Response
+from pydantic import ValidationError, parse_obj_as
 
 from example.client.api.pet_api import AsyncPetApi, SyncPetApi
 from example.client.api.store_api import AsyncStoreApi, SyncStoreApi
@@ -32,8 +31,8 @@ class SyncApis(Generic[ClientT]):
 
 
 T = TypeVar("T")
-Send = Callable[[AsyncRequest], Awaitable[AsyncResponse]]
-MiddlewareT = Callable[[AsyncRequest, Send], Awaitable[AsyncResponse]]
+Send = Callable[[Request], Awaitable[Response]]
+MiddlewareT = Callable[[Request, Send], Awaitable[Response]]
 
 
 class ApiClient:
@@ -60,7 +59,7 @@ class ApiClient:
         if path_params is None:
             path_params = {}
         url = (self.host or "") + url.format(**path_params)
-        request = AsyncRequest(method, url, **kwargs)
+        request = Request(method, url, **kwargs)
         return await self.send(request, type_)
 
     @overload
@@ -77,16 +76,16 @@ class ApiClient:
         """
         return get_event_loop().run_until_complete(self.request(type_=type_, **kwargs))
 
-    async def send(self, request: AsyncRequest, type_: Type[T]) -> T:
+    async def send(self, request: Request, type_: Type[T]) -> T:
         response = await self.middleware(request, self.send_inner)
-        if response.status_code == 200:
+        if response.status_code in [200, 201]:
             try:
-                return parse_as_type(response.json(), type_)
+                return parse_obj_as(type_, response.json())
             except ValidationError as e:
                 raise ResponseHandlingException(e)
         raise UnexpectedResponse.for_response(response)
 
-    async def send_inner(self, request: AsyncRequest) -> AsyncResponse:
+    async def send_inner(self, request: Request) -> Response:
         try:
             response = await self._async_client.send(request)
         except Exception as e:
@@ -96,8 +95,8 @@ class ApiClient:
     def add_middleware(self, middleware: MiddlewareT) -> None:
         current_middleware = self.middleware
 
-        async def new_middleware(request: AsyncRequest, call_next: Send) -> AsyncResponse:
-            async def inner_send(request: AsyncRequest) -> AsyncResponse:
+        async def new_middleware(request: Request, call_next: Send) -> Response:
+            async def inner_send(request: Request) -> Response:
                 return await current_middleware(request, call_next)
 
             return await middleware(request, inner_send)
@@ -106,18 +105,5 @@ class ApiClient:
 
 
 class BaseMiddleware:
-    async def __call__(self, request: AsyncRequest, call_next: Send) -> AsyncResponse:
+    async def __call__(self, request: Request, call_next: Send) -> Response:
         return await call_next(request)
-
-
-@lru_cache(maxsize=None)
-def _get_parsing_type(type_: Any, source: str) -> Any:
-    from pydantic.main import create_model
-
-    type_name = getattr(type_, "__name__", str(type_))
-    return create_model(f"ParsingModel[{type_name}] (for {source})", obj=(type_, ...))
-
-
-def parse_as_type(obj: Any, type_: Type[T]) -> T:
-    model_type = _get_parsing_type(type_, source=parse_as_type.__name__)
-    return model_type(obj=obj).obj

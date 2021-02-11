@@ -38,20 +38,41 @@ class _UserApi:
         """
         path_params = {"username": str(username)}
 
-        return self.api_client.request(type_=None, method="DELETE", url="/user/{username}", path_params=path_params)
+        return self.api_client.request(
+            type_=None,
+            method="DELETE",
+            url="/user/{username}",
+            path_params=path_params,
+        )
 
     def _build_for_get_user_by_name(self, username: str) -> Awaitable[m.User]:
         path_params = {"username": str(username)}
 
-        return self.api_client.request(type_=m.User, method="GET", url="/user/{username}", path_params=path_params)
+        return self.api_client.request(
+            type_=m.User,
+            method="GET",
+            url="/user/{username}",
+            path_params=path_params,
+        )
 
     def _build_for_login_user(self, username: str, password: str) -> Awaitable[str]:
         query_params = {"username": str(username), "password": str(password)}
 
-        return self.api_client.request(type_=str, method="GET", url="/user/login", params=query_params)
+        return self.api_client.request(
+            type_=str,
+            method="GET",
+            url="/user/login",
+            params=query_params,
+        )
 
-    def _build_for_logout_user(self,) -> Awaitable[None]:
-        return self.api_client.request(type_=None, method="GET", url="/user/logout")
+    def _build_for_logout_user(
+        self,
+    ) -> Awaitable[None]:
+        return self.api_client.request(
+            type_=None,
+            method="GET",
+            url="/user/logout",
+        )
 
     def _build_for_update_user(self, username: str, body: m.User) -> Awaitable[None]:
         """
@@ -91,7 +112,9 @@ class AsyncUserApi(_UserApi):
     async def login_user(self, username: str, password: str) -> str:
         return await self._build_for_login_user(username=username, password=password)
 
-    async def logout_user(self,) -> None:
+    async def logout_user(
+        self,
+    ) -> None:
         return await self._build_for_logout_user()
 
     async def update_user(self, username: str, body: m.User) -> None:
@@ -132,7 +155,9 @@ class SyncUserApi(_UserApi):
         coroutine = self._build_for_login_user(username=username, password=password)
         return get_event_loop().run_until_complete(coroutine)
 
-    def logout_user(self,) -> None:
+    def logout_user(
+        self,
+    ) -> None:
         coroutine = self._build_for_logout_user()
         return get_event_loop().run_until_complete(coroutine)
 

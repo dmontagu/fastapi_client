@@ -7,7 +7,7 @@ from enum import Enum
 from typing import Any, Dict, List, Optional, Type, TypeVar, Union
 
 from fastapi.openapi.models import OAuthFlowPassword
-from httpx import AsyncClient, AsyncResponse
+from httpx import AsyncClient, Response
 from pydantic import BaseModel, ValidationError
 from typing_extensions import Literal
 
@@ -77,7 +77,7 @@ class TokenErrorResponse(BaseModel):
 TokenResponse = Union[TokenSuccessResponse, TokenErrorResponse]
 
 
-def parse_token_response(response: AsyncResponse) -> TokenResponse:
+def parse_token_response(response: Response) -> TokenResponse:
     with suppress(ValidationError):
         if response.status_code == HTTP_200_OK:
             return TokenSuccessResponse.parse_raw(response.text)
