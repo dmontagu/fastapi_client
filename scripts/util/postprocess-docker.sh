@@ -25,6 +25,7 @@ main() {
   validate_inputs
   merge_generated_models
   delete_unused
+  fix_any_of
   apply_formatters
 }
 
@@ -51,9 +52,15 @@ delete_unused() {
   rm "${PACKAGE_NAME}"/configuration.py >/dev/null 2>&1 || true
 }
 
+fix_any_of() {
+  find . -name "*.py" -exec sed -i.bak "s/AnyOf[a-zA-Z0-9]*/Any/" {} \;
+  find . -name "*.md" -exec sed -i.bak "s/AnyOf[a-zA-Z0-9]*/Any/" {} \;
+  find . -name "*.bak" -exec rm {} \;
+}
+
 apply_formatters() {
   autoflake --remove-all-unused-imports --recursive --remove-unused-variables --in-place "${PACKAGE_NAME}" --exclude=__init__.py
-  isort -w 120 -m 3 -tc -fgw 0 -ca -p "${PACKAGE_NAME}" -rc "${PACKAGE_NAME}"
+  isort --float-to-top -w 120 -m 3 --trailing-comma --force-grid-wrap 0 --combine-as -p "${PACKAGE_NAME}" "${PACKAGE_NAME}"
   black --fast -l 120 --target-version py36 "${PACKAGE_NAME}"
 }
 
