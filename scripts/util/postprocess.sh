@@ -30,6 +30,12 @@ main() {
   validate_inputs
   docker build -t fastapi-client-generator:latest .
   docker run --rm --user $(id -u):$(id -g) -v "$WORK_DIR":/generator-output fastapi-client-generator:latest -p "${PACKAGE_NAME}"
+  add_py_typed
+}
+
+add_py_typed() {
+  touch "$WORK_DIR"/"${PACKAGE_NAME}"/py.typed
+  echo "include ${PACKAGE_NAME}/py.typed" > "$WORK_DIR"/MANIFEST.in
 }
 
 validate_inputs() {
