@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from typing import Optional
 
 from fastapi.openapi.models import OAuthFlowPassword
-from httpx import AsyncRequest, AsyncResponse
+from httpx import Request, Response
 from pydantic import BaseModel
 
 from example.client.api_client import Send
@@ -55,7 +55,7 @@ class AuthMiddleware:
         self.flow_client = PasswordFlowClient(flow)
 
     @staticmethod
-    def set_access_header(token: str, request: AsyncRequest, *, replace: bool) -> None:
+    def set_access_header(token: str, request: Request, *, replace: bool) -> None:
         key = "authorization"
         value = f"bearer {token}"
         if replace:
@@ -85,7 +85,7 @@ class AuthMiddleware:
                 return token_response
         return None
 
-    async def __call__(self, request: AsyncRequest, call_next: Send) -> AsyncResponse:
+    async def __call__(self, request: Request, call_next: Send) -> Response:
         if self.auth_state.is_expired():
             await self.refresh()
         access_token = self.auth_state.access_token
