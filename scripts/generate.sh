@@ -130,15 +130,19 @@ clean_openapi_generator_output() {
 
 move_generated_output() {
   WORK_DIR=$1
+
+  
   mkdir -p "$OUTPUT_PATH"
   if [ -n "$WITH_META" ]; then
     # TODO: add valid generation for docs
-    rm -r "$WORK_DIR"/docs
+    # rm -r "$WORK_DIR"/docs
+    mv "$WORK_DIR"/"$PACKAGE_NAME"_README.md "$WORK_DIR"/"$PACKAGE_NAME"/README.md 
     # TODO: add valid generation for tests
     rm -r "$WORK_DIR"/test
     mv "$WORK_DIR" "$OUTPUT_PATH"/"$PACKAGE_NAME"
   else
-     mv "$WORK_DIR"/"$PACKAGE_NAME" "$OUTPUT_PATH"
+    mv "$WORK_DIR"/"$PACKAGE_NAME"_README.md "$WORK_DIR"/"$PACKAGE_NAME"/README.md 
+    mv "$WORK_DIR"/"$PACKAGE_NAME" "$OUTPUT_PATH"
   fi
   rm -r "$WORK_DIR"
 }

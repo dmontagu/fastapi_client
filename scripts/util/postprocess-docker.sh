@@ -26,6 +26,7 @@ main() {
   merge_generated_models
   delete_unused
   fix_any_of
+  fix_docs_path
   apply_formatters
 }
 
@@ -56,6 +57,10 @@ fix_any_of() {
   find . -name "*.py" -exec sed -i.bak "s/AnyOf[a-zA-Z0-9]*/Any/" {} \;
   find . -name "*.md" -exec sed -i.bak "s/AnyOf[a-zA-Z0-9]*/Any/" {} \;
   find . -name "*.bak" -exec rm {} \;
+}
+
+fix_docs_path() {
+  sed -i -e "s="${PACKAGE_NAME}"/docs=docs=" "${PACKAGE_NAME}"_README.md
 }
 
 apply_formatters() {
