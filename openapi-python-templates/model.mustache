@@ -4,6 +4,9 @@ from typing import Any  # noqa
 from typing_extensions import Literal
 from uuid import UUID
 from pydantic import BaseModel, Field
+import io
+
+IO = io.IOBase
 
 {{#models}}
 {{#model}}
