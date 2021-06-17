@@ -106,7 +106,7 @@ class _{{classname}}:
 
 {{/formParams.0}}
 {{#bodyParam}}
-        body = jsonable_encoder({{paramName}})
+        body = jsonable_encoder({{paramName}}, exclude_defaults = True)
 
 {{/bodyParam}}
         return self.api_client.request(
