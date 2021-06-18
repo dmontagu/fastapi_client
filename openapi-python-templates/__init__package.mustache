@@ -3,7 +3,7 @@ from pydantic import BaseModel
 
 from @IMPORT_NAME@ import models
 from @IMPORT_NAME@.api_client import ApiClient, AsyncApis, SyncApis  # noqa F401
-
+from @IMPORT_NAME@.exceptions import ApiException, UnexpectedResponse  # noqa F401
 
 for model in inspect.getmembers(models, inspect.isclass):
 	if model[1].__module__ == "@IMPORT_NAME@.models":
