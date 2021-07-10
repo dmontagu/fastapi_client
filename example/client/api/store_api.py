@@ -21,23 +21,14 @@ class _StoreApi:
         path_params = {"orderId": str(order_id)}
 
         return self.api_client.request(
-            type_=None,
-            method="DELETE",
-            url="/store/order/{orderId}",
-            path_params=path_params,
+            type_=None, method="DELETE", url="/store/order/{orderId}", path_params=path_params,
         )
 
-    def _build_for_get_inventory(
-        self,
-    ) -> Awaitable[Dict[str, int]]:
+    def _build_for_get_inventory(self,) -> Awaitable[Dict[str, int]]:
         """
         Returns a map of status codes to quantities
         """
-        return self.api_client.request(
-            type_=Dict[str, int],
-            method="GET",
-            url="/store/inventory",
-        )
+        return self.api_client.request(type_=Dict[str, int], method="GET", url="/store/inventory",)
 
     def _build_for_get_order_by_id(self, order_id: int) -> Awaitable[m.Order]:
         """
@@ -46,10 +37,7 @@ class _StoreApi:
         path_params = {"orderId": str(order_id)}
 
         return self.api_client.request(
-            type_=m.Order,
-            method="GET",
-            url="/store/order/{orderId}",
-            path_params=path_params,
+            type_=m.Order, method="GET", url="/store/order/{orderId}", path_params=path_params,
         )
 
     def _build_for_place_order(self, body: m.Order) -> Awaitable[m.Order]:
@@ -65,9 +53,7 @@ class AsyncStoreApi(_StoreApi):
         """
         return await self._build_for_delete_order(order_id=order_id)
 
-    async def get_inventory(
-        self,
-    ) -> Dict[str, int]:
+    async def get_inventory(self,) -> Dict[str, int]:
         """
         Returns a map of status codes to quantities
         """
@@ -91,9 +77,7 @@ class SyncStoreApi(_StoreApi):
         coroutine = self._build_for_delete_order(order_id=order_id)
         return get_event_loop().run_until_complete(coroutine)
 
-    def get_inventory(
-        self,
-    ) -> Dict[str, int]:
+    def get_inventory(self,) -> Dict[str, int]:
         """
         Returns a map of status codes to quantities
         """
