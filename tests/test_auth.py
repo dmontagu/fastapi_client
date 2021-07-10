@@ -1,6 +1,7 @@
 from typing import Dict
 
 from fastapi.openapi.models import OAuthFlowPassword
+
 from generated_client.api_client import ApiClient
 from generated_client.auth import AuthMiddleware, AuthState
 
