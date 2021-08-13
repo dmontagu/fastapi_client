@@ -48,7 +48,7 @@ class ApiClient:
         ...
 
     async def request(  # noqa F811
-        self, *, type_: Any, method: str, url: str, Optional[path_params: Dict[str, Any]] = None, **kwargs: Any
+        self, *, type_: Any, method: str, url: str, path_params: Optional[Dict[str, Any]] = None, **kwargs: Any
     ) -> Any:
         if path_params is None:
             path_params = {}
