@@ -1,5 +1,5 @@
 import json
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, cast
 
 from httpx import Headers, Response
 
@@ -38,7 +38,7 @@ class UnexpectedResponse(ApiException):
         return f"Unexpected Response: {status_str}\n{raw_content_str}"
 
     def structured(self) -> Dict[str, Any]:
-        return json.loads(self.content)
+        return cast(Dict[str, Any], json.loads(self.content))
 
 
 class ResponseHandlingException(ApiException):
