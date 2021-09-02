@@ -109,7 +109,8 @@ class _{{classname}}:
         body = jsonable_encoder({{paramName}}, exclude_defaults = True)
 
 {{/bodyParam}}
-        return self.api_client.request(
+        return cast(Awaitable[{{>_returnType}}, 
+            self.api_client.request(
             type_={{>_returnType}},
             method="{{httpMethod}}",
             url="{{{path}}}",
@@ -120,7 +121,7 @@ class _{{classname}}:
             {{#formParams.0}}data=data,
             files=files{{^isMultipart}} or None{{/isMultipart}}{{/formParams.0}}
             {{#bodyParam}}json=body{{/bodyParam}}
-        )
+        ))
 
 {{/operation}}
 {{/operations}}
