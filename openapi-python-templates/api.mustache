@@ -1,7 +1,7 @@
 # flake8: noqa E501
 import json
 from asyncio import get_event_loop
-from typing import Any, Awaitable, Dict, IO, List, Optional, TYPE_CHECKING, cast
+from typing import Any, Awaitable, Dict, IO, List, Optional, TYPE_CHECKING
 from datetime import date, datetime, timedelta
 from uuid import UUID
 
@@ -109,8 +109,7 @@ class _{{classname}}:
         body = jsonable_encoder({{paramName}}, exclude_defaults = True)
 
 {{/bodyParam}}
-        return cast(Awaitable[{{>_returnType}}], 
-            self.api_client.request(
+        return self.api_client.request(
             type_={{>_returnType}},
             method="{{httpMethod}}",
             url="{{{path}}}",
@@ -121,7 +120,7 @@ class _{{classname}}:
             {{#formParams.0}}data=data,
             files=files{{^isMultipart}} or None{{/isMultipart}}{{/formParams.0}}
             {{#bodyParam}}json=body{{/bodyParam}}
-        ))
+        ) 
 
 {{/operation}}
 {{/operations}}
