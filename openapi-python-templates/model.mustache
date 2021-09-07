@@ -25,10 +25,10 @@ class {{classname}}(BaseModel):
     """ {{ description }} """
 {{#vars}}
 {{#isEnum}}
-    {{name}}: "Literal[{{#allowableValues}}{{#values}}'{{{this}}}'{{^-last}}, {{/-last}}{{/values}}{{/allowableValues}}]" = Field({{#required}}...{{/required}}{{^required}}None{{/required}}, alias="{{baseName}}", help="{{ description }}")
+    {{name}}: "Literal[{{#allowableValues}}{{#values}}'{{{this}}}'{{^-last}}, {{/-last}}{{/values}}{{/allowableValues}}]" = Field({{#required}}...{{/required}}{{^required}}None{{/required}}, alias="{{baseName}}", description="{{ description }}")
 {{/isEnum}}
 {{^isEnum}}
-    {{name}}: "{{^required}}Optional[{{/required}}{{>_dataTypeModel}}{{^required}}]{{/required}}" = Field({{#required}}...{{/required}}{{^required}}None{{/required}}, alias="{{baseName}}", help="{{ description }}")
+    {{name}}: "{{^required}}Optional[{{/required}}{{>_dataTypeModel}}{{^required}}]{{/required}}" = Field({{#required}}...{{/required}}{{^required}}None{{/required}}, alias="{{baseName}}", description="{{ description }}")
 {{/isEnum}}
 {{/vars}}
 {{/allowableValues}}
