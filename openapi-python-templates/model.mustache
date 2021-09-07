@@ -13,6 +13,7 @@ from pydantic import BaseModel, Field
 from enum import Enum
 
 class {{classname}}(str, Enum):
+    """ {{ description }} """
 {{#enumVars}}
     {{name}} = {{{value}}}{{^-last}}
 {{/-last}}
@@ -21,12 +22,13 @@ class {{classname}}(str, Enum):
 
 {{^allowableValues}}
 class {{classname}}(BaseModel):
+    """ {{ description }} """
 {{#vars}}
 {{#isEnum}}
-    {{name}}: "Literal[{{#allowableValues}}{{#values}}'{{{this}}}'{{^-last}}, {{/-last}}{{/values}}{{/allowableValues}}]" = Field({{#required}}...{{/required}}{{^required}}None{{/required}}, alias="{{baseName}}")
+    {{name}}: "Literal[{{#allowableValues}}{{#values}}'{{{this}}}'{{^-last}}, {{/-last}}{{/values}}{{/allowableValues}}]" = Field({{#required}}...{{/required}}{{^required}}None{{/required}}, alias="{{baseName}}", help="{{ description }}")
 {{/isEnum}}
 {{^isEnum}}
-    {{name}}: "{{^required}}Optional[{{/required}}{{>_dataTypeModel}}{{^required}}]{{/required}}" = Field({{#required}}...{{/required}}{{^required}}None{{/required}}, alias="{{baseName}}")
+    {{name}}: "{{^required}}Optional[{{/required}}{{>_dataTypeModel}}{{^required}}]{{/required}}" = Field({{#required}}...{{/required}}{{^required}}None{{/required}}, alias="{{baseName}}", help="{{ description }}")
 {{/isEnum}}
 {{/vars}}
 {{/allowableValues}}
