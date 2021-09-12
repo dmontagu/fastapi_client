@@ -6,7 +6,7 @@ from fastapi.openapi.models import OAuthFlowPassword
 from httpx import Request, Response
 from pydantic import BaseModel
 
-from @IMPORT_NAME@.api_client import Send
+from @IMPORT_NAME@.api_client import AsyncSend
 from @IMPORT_NAME@.exceptions import UnexpectedResponse
 from @IMPORT_NAME@.password_flow_client import (
     AccessTokenRequest,
@@ -85,7 +85,7 @@ class AuthMiddleware:
                 return token_response
         return None
 
-    async def __call__(self, request: Request, call_next: Send) -> Response:
+    async def __call__(self, request: Request, call_next: AsyncSend) -> Response:
         if self.auth_state.is_expired():
             await self.refresh()
         access_token = self.auth_state.access_token

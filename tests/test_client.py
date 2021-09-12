@@ -7,7 +7,7 @@ from asyncio import get_event_loop
 from typing import Tuple, Type
 
 import generated_client.models as models
-from generated_client.api_client import ApiClient, SyncApis
+from generated_client.api_client import AsyncApiClient, SyncApis
 from mypy.ipc import TracebackType
 
 
@@ -17,7 +17,7 @@ class Client(SyncApis):
     """
 
     def __init__(self) -> None:
-        super().__init__(ApiClient(host="http://localhost:8000", timeout=3600))
+        super().__init__(AsyncApiClient(host="http://localhost:8000", timeout=3600))
 
     def __enter__(self) -> "Client":
         return self

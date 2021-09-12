@@ -3,14 +3,14 @@ from functools import lru_cache
 
 from fastapi.openapi.models import OAuthFlowPassword
 
-from example.client.api_client import ApiClient, AsyncApis, SyncApis
+from example.client.api_client import AsyncApiClient, AsyncApis, SyncApis
 from example.client.auth import AuthMiddleware, AuthState
 from example.client.models import User
 
 
-class AutoAuthClient(ApiClient):
+class AutoAuthClient(AsyncApiClient):
     """
-    You can add custom handling behavior by subclassing ApiClient.
+    You can add custom handling behavior by subclassing AsyncApiClient.
 
     This subclass adds automatic retry on auth errors via AuthMiddleware.
     """

@@ -21,10 +21,10 @@ If you try this out, please help me by reporting any issues you notice!
 ## Client library usage
 
 ```python
-from client.api_client import ApiClient, AsyncApis, SyncApis
+from client.api_client import AsyncApiClient, AsyncApis, SyncApis
 from client.models import Pet
 
-client = ApiClient(host="http://localhost")
+client = AsyncApiClient(host="http://localhost")
 sync_apis = SyncApis(client)
 async_apis = AsyncApis(client)
 

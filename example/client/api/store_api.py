@@ -7,11 +7,11 @@ from fastapi.encoders import jsonable_encoder
 from example.client import models as m
 
 if TYPE_CHECKING:
-    from example.client.api_client import ApiClient
+    from example.client.api_client import AsyncApiClient
 
 
 class _StoreApi:
-    def __init__(self, api_client: "ApiClient"):
+    def __init__(self, api_client: "AsyncApiClient"):
         self.api_client = api_client
 
     def _build_for_delete_order(self, order_id: int) -> Awaitable[None]:

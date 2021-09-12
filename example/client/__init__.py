@@ -3,7 +3,7 @@ import inspect
 from pydantic import BaseModel
 
 from example.client import models
-from example.client.api_client import ApiClient, AsyncApis, SyncApis  # noqa F401
+from example.client.api_client import AsyncApiClient, AsyncApis, SyncApis  # noqa F401
 
 for model in inspect.getmembers(models, inspect.isclass):
     if model[1].__module__ == "example.client.models":

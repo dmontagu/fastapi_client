@@ -4,9 +4,9 @@
 # Use this file to prevent files from being overwritten by the generator.
 # The patterns follow closely to .gitignore or .dockerignore.
 
-# As an example, the C# client generator defines ApiClient.cs.
+# As an example, the C# client generator defines AsyncApiClient.cs.
 # You can make changes and tell OpenAPI Generator to ignore just this file by uncommenting the following line:
-#ApiClient.cs
+#AsyncApiClient.cs
 
 # You can match any string of characters against a directory, file or extension with a single asterisk (*):
 #foo/*/qux

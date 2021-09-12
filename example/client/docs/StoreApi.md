@@ -89,7 +89,7 @@ configuration.api_key['api_key'] = 'YOUR_API_KEY'
 # Defining host is optional and default to https://petstore.swagger.io/v2
 configuration.host = "https://petstore.swagger.io/v2"
 # Create an instance of the API class
-api_instance = client.StoreApi(client.ApiClient(configuration))
+api_instance = client.StoreApi(client.AsyncApiClient(configuration))
 
 try:
     # Returns pet inventories by status

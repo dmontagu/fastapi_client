@@ -1,13 +1,13 @@
 from typing import Dict
 
 from fastapi.openapi.models import OAuthFlowPassword
-from generated_client.api_client import ApiClient
+from generated_client.api_client import AsyncApiClient
 from generated_client.auth import AuthMiddleware, AuthState
 
 
-class AutoAuthClient(ApiClient):
+class AutoAuthClient(AsyncApiClient):
     """
-    Subclasses ApiClient to add some extra functionality
+    Subclasses AsyncApiClient to add some extra functionality
     """
 
     def __init__(self, host: str = "http://localhost", tokenUrl: str = "http://localhost/token"):

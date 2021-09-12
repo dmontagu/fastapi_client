@@ -7,32 +7,35 @@ from pydantic import ValidationError, parse_obj_as
 {{#apiInfo}}{{#apis}}from @IMPORT_NAME@.api.{{classVarName}} import Async{{classname}}, Sync{{classname}}
 {{/apis}}{{/apiInfo}}from @IMPORT_NAME@.exceptions import ResponseHandlingException, UnexpectedResponse
 
-ClientT = TypeVar("ClientT", bound="ApiClient")
+AsyncClientT = TypeVar("AsyncClientT", bound="AsyncApiClient")
+SyncClientT = TypeVar("SyncClientT", bound="SyncApiClient")
 
 
-class AsyncApis(Generic[ClientT]):
-    def __init__(self, client: ClientT):
+class AsyncApis(Generic[AsyncClientT]):
+    def __init__(self, client: AsyncClientT):
         self.client = client
 {{#apiInfo}}{{#apis}}
         self.{{classVarName}} = Async{{classname}}(self.client){{/apis}}{{/apiInfo}}
 
 
-class SyncApis(Generic[ClientT]):
-    def __init__(self, client: ClientT):
+class SyncApis(Generic[SyncClientT]):
+    def __init__(self, client: SyncClientT):
         self.client = client
 {{#apiInfo}}{{#apis}}
         self.{{classVarName}} = Sync{{classname}}(self.client){{/apis}}{{/apiInfo}}
 
 
 T = TypeVar("T")
-Send = Callable[[Request], Awaitable[Response]]
-MiddlewareT = Callable[[Request, Send], Awaitable[Response]]
+AsyncSend = Callable[[Request], Awaitable[Response]]
+AsyncMiddlewareT = Callable[[Request, AsyncSend], Awaitable[Response]]
+SyncSend = Callable[[Request], Awaitable[Response]]
+SyncMiddlewareT = Callable[[Request, SyncSend], Response]
 
 
-class ApiClient:
+class AsyncApiClient:
     def __init__(self, host: Optional[str] = None, **kwargs: Any) -> None:
         self.host = host
-        self.middleware: MiddlewareT = BaseMiddleware()
+        self.middleware: AsyncMiddlewareT = BaseAsyncMiddleware()
         self._async_client = AsyncClient(**kwargs)
 
     @property
@@ -95,10 +98,10 @@ class ApiClient:
             raise ResponseHandlingException(e)
         return response
 
-    def add_middleware(self, middleware: MiddlewareT) -> None:
+    def add_middleware(self, middleware: AsyncMiddlewareT) -> None:
         current_middleware = self.middleware
 
-        async def new_middleware(request: Request, call_next: Send) -> Response:
+        async def new_middleware(request: Request, call_next: AsyncSend) -> Response:
             async def inner_send(request: Request) -> Response:
                 return await current_middleware(request, call_next)
 
@@ -107,6 +110,89 @@ class ApiClient:
         self.middleware = new_middleware
 
 
-class BaseMiddleware:
-    async def __call__(self, request: Request, call_next: Send) -> Response:
+class BaseAsyncMiddleware:
+    async def __call__(self, request: Request, call_next: AsyncSend) -> Response:
         return await call_next(request)
+
+
+class SyncApiClient:
+    def __init__(self, host: Optional[str] = None, **kwargs: Any) -> None:
+        self.host = host
+        self.middleware: SyncMiddlewareT = BaseSyncMiddleware()
+        self._sync_client = SyncClient(**kwargs)
+
+    @property
+    def sync_client(self) -> SyncClient:
+        return self._async_client
+
+    async def close(self) -> None:
+        await self._sync_client.aclose()
+
+    @overload
+    def request(
+        self, *, type_: Type[T], method: str, url: str, path_params: Optional[Dict[str, Any]] = None, **kwargs: Any
+    ) -> T:
+        ...
+
+    @overload  # noqa F811
+    def request(
+        self, *, type_: None, method: str, url: str, path_params: Optional[Dict[str, Any]] = None, **kwargs: Any
+    ) -> None:
+        ...
+
+    def request(  # noqa F811
+        self, *, type_: Any, method: str, url: str, path_params: Optional[Dict[str, Any]] = None, **kwargs: Any
+    ) -> Any:
+        if path_params is None:
+            path_params = {}
+        url = (self.host or "") + url.format(**path_params)
+        request = Request(method, url, **kwargs)
+        return self.send(request, type_)
+
+    @overload
+    def request_sync(self, *, type_: Type[T], **kwargs: Any) -> T:
+        ...
+
+    @overload  # noqa F811
+    def request_sync(self, *, type_: None, **kwargs: Any) -> None:
+        ...
+
+    def request_sync(self, *, type_: Any, **kwargs: Any) -> Any:  # noqa F811
+        """
+        This method is not used by the generated apis, but is included for convenience
+        """
+        return self.request(type_=type_, **kwargs)
+
+    def send(self, request: Request, type_: Type[T]) -> T:
+        response = await self.middleware(request, self.send_inner)
+        if response.status_code in [200, 201]:
+            try:
+                if type_ is None:
+                    return None  # type: ignore
+                return parse_obj_as(type_, response.json())
+            except ValidationError as e:
+                raise ResponseHandlingException(e)
+        raise UnexpectedResponse.for_response(response)
+
+    def send_inner(self, request: Request) -> Response:
+        try:
+            response = await self._sync_client.send(request)
+        except Exception as e:
+            raise ResponseHandlingException(e)
+        return response
+
+    def add_middleware(self, middleware: SyncMiddlewareT) -> None:
+        current_middleware = self.middleware
+
+        async def new_middleware(request: Request, call_next: SyncSend) -> Response:
+            async def inner_send(request: Request) -> Response:
+                return current_middleware(request, call_next)
+
+            return middleware(request, inner_send)
+
+        self.middleware = new_middleware
+
+
+class BaseSyncMiddleware:
+    async def __call__(self, request: Request, call_next: SyncSend) -> Response:
+        return call_next(request)

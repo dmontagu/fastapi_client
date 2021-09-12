@@ -35,7 +35,7 @@ configuration.access_token = 'YOUR_ACCESS_TOKEN'
 # Defining host is optional and default to https://petstore.swagger.io/v2
 configuration.host = "https://petstore.swagger.io/v2"
 # Create an instance of the API class
-api_instance = client.PetApi(client.ApiClient(configuration))
+api_instance = client.PetApi(client.AsyncApiClient(configuration))
 body = client.Pet() # Pet | Pet object that needs to be added to the store
 
 try:
@@ -92,7 +92,7 @@ configuration.access_token = 'YOUR_ACCESS_TOKEN'
 # Defining host is optional and default to https://petstore.swagger.io/v2
 configuration.host = "https://petstore.swagger.io/v2"
 # Create an instance of the API class
-api_instance = client.PetApi(client.ApiClient(configuration))
+api_instance = client.PetApi(client.AsyncApiClient(configuration))
 pet_id = 56 # int | Pet id to delete
 api_key = 'api_key_example' # str |  (optional)
 
@@ -154,7 +154,7 @@ configuration.access_token = 'YOUR_ACCESS_TOKEN'
 # Defining host is optional and default to https://petstore.swagger.io/v2
 configuration.host = "https://petstore.swagger.io/v2"
 # Create an instance of the API class
-api_instance = client.PetApi(client.ApiClient(configuration))
+api_instance = client.PetApi(client.AsyncApiClient(configuration))
 status = ['status_example'] # List[str] | Status values that need to be considered for filter
 
 try:
@@ -215,7 +215,7 @@ configuration.access_token = 'YOUR_ACCESS_TOKEN'
 # Defining host is optional and default to https://petstore.swagger.io/v2
 configuration.host = "https://petstore.swagger.io/v2"
 # Create an instance of the API class
-api_instance = client.PetApi(client.ApiClient(configuration))
+api_instance = client.PetApi(client.AsyncApiClient(configuration))
 tags = ['tags_example'] # List[str] | Tags to filter by
 
 try:
@@ -278,7 +278,7 @@ configuration.api_key['api_key'] = 'YOUR_API_KEY'
 # Defining host is optional and default to https://petstore.swagger.io/v2
 configuration.host = "https://petstore.swagger.io/v2"
 # Create an instance of the API class
-api_instance = client.PetApi(client.ApiClient(configuration))
+api_instance = client.PetApi(client.AsyncApiClient(configuration))
 pet_id = 56 # int | ID of pet to return
 
 try:
@@ -338,7 +338,7 @@ configuration.access_token = 'YOUR_ACCESS_TOKEN'
 # Defining host is optional and default to https://petstore.swagger.io/v2
 configuration.host = "https://petstore.swagger.io/v2"
 # Create an instance of the API class
-api_instance = client.PetApi(client.ApiClient(configuration))
+api_instance = client.PetApi(client.AsyncApiClient(configuration))
 body = client.Pet() # Pet | Pet object that needs to be added to the store
 
 try:
@@ -397,7 +397,7 @@ configuration.access_token = 'YOUR_ACCESS_TOKEN'
 # Defining host is optional and default to https://petstore.swagger.io/v2
 configuration.host = "https://petstore.swagger.io/v2"
 # Create an instance of the API class
-api_instance = client.PetApi(client.ApiClient(configuration))
+api_instance = client.PetApi(client.AsyncApiClient(configuration))
 pet_id = 56 # int | ID of pet that needs to be updated
 name = 'name_example' # str | Updated name of the pet (optional)
 status = 'status_example' # str | Updated status of the pet (optional)
@@ -458,7 +458,7 @@ configuration.access_token = 'YOUR_ACCESS_TOKEN'
 # Defining host is optional and default to https://petstore.swagger.io/v2
 configuration.host = "https://petstore.swagger.io/v2"
 # Create an instance of the API class
-api_instance = client.PetApi(client.ApiClient(configuration))
+api_instance = client.PetApi(client.AsyncApiClient(configuration))
 pet_id = 56 # int | ID of pet to update
 additional_metadata = 'additional_metadata_example' # str | Additional data to pass to server (optional)
 file = client.IO() # IO | file to upload (optional)
