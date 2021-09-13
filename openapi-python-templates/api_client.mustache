@@ -119,14 +119,14 @@ class SyncApiClient:
     def __init__(self, host: Optional[str] = None, **kwargs: Any) -> None:
         self.host = host
         self.middleware: SyncMiddlewareT = BaseSyncMiddleware()
-        self._sync_client = SyncClient(**kwargs)
+        self._sync_client = Client(**kwargs)
 
     @property
-    def sync_client(self) -> SyncClient:
-        return self._async_client
+    def sync_client(self) -> Client:
+        return self._sync_client
 
-    async def close(self) -> None:
-        await self._sync_client.aclose()
+    def close(self) -> None:
+        self._sync_client.aclose()
 
     @overload
     def request(
@@ -164,7 +164,7 @@ class SyncApiClient:
         return self.request(type_=type_, **kwargs)
 
     def send(self, request: Request, type_: Type[T]) -> T:
-        response = await self.middleware(request, self.send_inner)
+        response = self.middleware(request, self.send_inner)
         if response.status_code in [200, 201]:
             try:
                 if type_ is None:
@@ -176,7 +176,7 @@ class SyncApiClient:
 
     def send_inner(self, request: Request) -> Response:
         try:
-            response = await self._sync_client.send(request)
+            response = self._sync_client.send(request)
         except Exception as e:
             raise ResponseHandlingException(e)
         return response
@@ -194,5 +194,5 @@ class SyncApiClient:
 
 
 class BaseSyncMiddleware:
-    async def __call__(self, request: Request, call_next: SyncSend) -> Response:
+    def __call__(self, request: Request, call_next: SyncSend) -> Response:
         return call_next(request)
