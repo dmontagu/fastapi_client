@@ -62,20 +62,6 @@ class AsyncApiClient:
         request = Request(method, url, **kwargs)
         return await self.send(request, type_)
 
-    @overload
-    def request_sync(self, *, type_: Type[T], **kwargs: Any) -> T:
-        ...
-
-    @overload  # noqa F811
-    def request_sync(self, *, type_: None, **kwargs: Any) -> None:
-        ...
-
-    def request_sync(self, *, type_: Any, **kwargs: Any) -> Any:  # noqa F811
-        """
-        This method is not used by the generated apis, but is included for convenience
-        """
-        return get_event_loop().run_until_complete(self.request(type_=type_, **kwargs))
-
     async def send(self, request: Request, type_: Type[T]) -> T:
         response = await self.middleware(request, self.send_inner)
         if response.status_code in [200, 201]:

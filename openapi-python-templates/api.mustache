@@ -109,7 +109,7 @@ class Async{{classname}}:
         body = jsonable_encoder({{paramName}}, exclude_defaults = True)
 
 {{/bodyParam}}
-        return self.api_client.request(
+        return await self.api_client.request(
             type_={{>_returnType}},
             method="{{httpMethod}}",
             url="{{{path}}}",
