@@ -31,6 +31,10 @@ class {{classname}}(BaseModel):
     {{name}}: "{{^required}}Optional[{{/required}}{{>_dataTypeModel}}{{^required}}]{{/required}}" = Field({{#required}}...{{/required}}{{^required}}None{{/required}}, alias="{{baseName}}", description="{{ description }}")
 {{/isEnum}}
 {{/vars}}
+
+    class Config:
+        extra: pydantic.Extra = pydantic.Extra.forbid
+        
 {{/allowableValues}}
 
 {{/model}}
