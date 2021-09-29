@@ -3,7 +3,7 @@ from functools import lru_cache
 
 from fastapi.openapi.models import OAuthFlowPassword
 
-from example.client.api_client import AsyncApiClient, AsyncApis, SyncApis
+from client.api_client import AsyncApiClient, AsyncApis, SyncApiClient, SyncApis
 from example.client.auth import AuthMiddleware, AuthState
 from example.client.models import User
 

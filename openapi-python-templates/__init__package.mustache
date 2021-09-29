@@ -2,7 +2,7 @@ import inspect
 from pydantic import BaseModel
 
 from @IMPORT_NAME@ import models
-from @IMPORT_NAME@.api_client import AsyncApiClient, AsyncApis, SyncApis  # noqa F401
+from @IMPORT_NAME@.api_client import AsyncApiClient, AsyncApis, SyncApiClient, SyncApis  # noqa F401
 from @IMPORT_NAME@.exceptions import ApiException, UnexpectedResponse  # noqa F401
 
 for model in inspect.getmembers(models, inspect.isclass):

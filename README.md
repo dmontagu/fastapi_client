@@ -21,7 +21,7 @@ If you try this out, please help me by reporting any issues you notice!
 ## Client library usage
 
 ```python
-from client.api_client import AsyncApiClient, AsyncApis, SyncApis
+from client.api_client import AsyncApiClient, AsyncApis, SyncApiClient, SyncApis
 from client.models import Pet
 
 client = AsyncApiClient(host="http://localhost")
