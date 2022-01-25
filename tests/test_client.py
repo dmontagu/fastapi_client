@@ -37,7 +37,7 @@ def test_any() -> None:
 
 
 def _get_file_info() -> Tuple[int, str]:
-    """ Return length and hash string from a file """
+    """Return length and hash string from a file"""
     with open(__file__, "rb") as file:
         data = file.read()
         length = len(data)

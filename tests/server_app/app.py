@@ -26,7 +26,7 @@ app.include_router(client_router(), tags=["client"])
 
 
 def main() -> None:
-    """ Kick off uvicorn on port 8000"""
+    """Kick off uvicorn on port 8000"""
     uvicorn.run(app, host="0.0.0.0", port=8000)
 
 
