@@ -232,6 +232,6 @@ class Sync{{classname}}:
             {{#formParams.0}}data=data,
             files=files{{^isMultipart}} or None{{/isMultipart}}{{/formParams.0}}
             {{#bodyParam}}json=body{{/bodyParam}}
-        )
+        ) # type: ignore
 {{/operation}}
 {{/operations}}
