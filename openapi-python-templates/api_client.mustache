@@ -70,12 +70,11 @@ class AsyncApiClient:
         response = await self.middleware(request, self.send_inner)
         if response.status_code in [200, 201]:
             try:
-                if type_ is None:             
+                if type_ is None:
                     return None  # type: ignore
-                try:
-                    return parse_obj_as(type_, response.json())
-                except:
-                    return response.content
+                if type_ == str:
+                    return response.content  # type: ignore
+                return parse_obj_as(type_, response.json())
             except ValidationError as e:
                 raise ResponseHandlingException(e)
         raise UnexpectedResponse.for_response(response)
@@ -142,12 +141,11 @@ class SyncApiClient:
         response = self.middleware(request, self.send_inner)
         if response.status_code in [200, 201]:
             try:
-                if type_ is None:             
+                if type_ is None:
                     return None  # type: ignore
-                try:
-                    return parse_obj_as(type_, response.json())
-                except:
-                    return response.content
+                if type_ == str:
+                    return response.content  # type: ignore
+                return parse_obj_as(type_, response.json())
             except ValidationError as e:
                 raise ResponseHandlingException(e)
         raise UnexpectedResponse.for_response(response)
