@@ -72,6 +72,8 @@ class AsyncApiClient:
             try:
                 if type_ is None:
                     return None  # type: ignore
+                if type_ == str:
+                    return response.content  # type: ignore
                 return parse_obj_as(type_, response.json())
             except ValidationError as e:
                 raise ResponseHandlingException(e)
@@ -141,6 +143,8 @@ class SyncApiClient:
             try:
                 if type_ is None:
                     return None  # type: ignore
+                if type_ == str:
+                    return response.content  # type: ignore
                 return parse_obj_as(type_, response.json())
             except ValidationError as e:
                 raise ResponseHandlingException(e)
