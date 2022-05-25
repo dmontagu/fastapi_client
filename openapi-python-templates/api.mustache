@@ -42,7 +42,7 @@ class Async{{classname}}:
 
 {{/pathParams.0}}
 {{#queryParams.0}}
-        query_params = {
+        query_params: Dict[str, Any] = {
 {{#queryParams}}
 {{#required}}
             "{{baseName}}": str({{paramName}}){{#hasMore}},{{/hasMore}}
@@ -154,7 +154,7 @@ class Sync{{classname}}:
 
 {{/pathParams.0}}
 {{#queryParams.0}}
-        query_params = {
+        query_params: Dict[str, Any] = {
 {{#queryParams}}
 {{#required}}
             "{{baseName}}": str({{paramName}}){{#hasMore}},{{/hasMore}}
