@@ -1,4 +1,4 @@
-FROM python:3.8-slim
+FROM python:3.9-slim-bullseye
 
 RUN apt-get update && apt-get install -y build-essential dos2unix
 RUN pip install black autoflake isort httpx fastapi typing_extensions
